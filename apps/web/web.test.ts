@@ -425,4 +425,207 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       })
     })
   })
+
+  describe('Base Layout and Navigation Components', () => {
+    describe('Layout Components Structure', () => {
+      test('should have main layout wrapper component', () => {
+        const layoutWrapperPath = join(webAppPath, 'components', 'layout.tsx')
+        expect(existsSync(layoutWrapperPath)).toBe(true)
+        
+        const layoutContent = readFileSync(layoutWrapperPath, 'utf-8')
+        expect(layoutContent).toContain('export function Layout')
+        expect(layoutContent).toContain('children: React.ReactNode')
+      })
+
+      test('should have header component with navigation', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        expect(existsSync(headerPath)).toBe(true)
+        
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        expect(headerContent).toContain('export function Header')
+        expect(headerContent).toContain('<header')
+      })
+
+      test('should have navigation component', () => {
+        const navPath = join(webAppPath, 'components', 'navigation.tsx')
+        expect(existsSync(navPath)).toBe(true)
+        
+        const navContent = readFileSync(navPath, 'utf-8')
+        expect(navContent).toContain('export function Navigation')
+        expect(navContent).toContain('<nav')
+      })
+
+      test('should have footer component', () => {
+        const footerPath = join(webAppPath, 'components', 'footer.tsx')
+        expect(existsSync(footerPath)).toBe(true)
+        
+        const footerContent = readFileSync(footerPath, 'utf-8')
+        expect(footerContent).toContain('export function Footer')
+        expect(footerContent).toContain('<footer')
+      })
+    })
+
+    describe('Layout Component Semantics', () => {
+      test('main layout should use proper semantic HTML', () => {
+        const layoutPath = join(webAppPath, 'components', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        expect(layoutContent).toContain('<main')
+        expect(layoutContent).toContain('</main>')
+      })
+
+      test('header component should have proper navigation structure', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        
+        expect(headerContent).toContain('<header')
+        expect(headerContent).toContain('</header>')
+        expect(headerContent).toContain('Navigation')
+      })
+
+      test('footer component should have proper semantic structure', () => {
+        const footerPath = join(webAppPath, 'components', 'footer.tsx')
+        const footerContent = readFileSync(footerPath, 'utf-8')
+        
+        expect(footerContent).toContain('<footer')
+        expect(footerContent).toContain('</footer>')
+      })
+    })
+
+    describe('Responsive Navigation', () => {
+      test('navigation should have mobile menu functionality', () => {
+        const navPath = join(webAppPath, 'components', 'navigation.tsx')
+        const navContent = readFileSync(navPath, 'utf-8')
+        
+        // Should have mobile menu state management
+        expect(navContent).toContain('useState')
+        expect(navContent).toContain('isOpen')
+        
+        // Should have responsive classes
+        expect(navContent).toContain('md:')
+        expect(navContent).toContain('lg:')
+      })
+
+      test('navigation should use navigation-menu component from shadcn/ui', () => {
+        const navPath = join(webAppPath, 'components', 'navigation.tsx')
+        const navContent = readFileSync(navPath, 'utf-8')
+        
+        expect(navContent).toContain('NavigationMenu')
+        expect(navContent).toContain('@/components/ui/navigation-menu')
+      })
+
+      test('header should be responsive across breakpoints', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        
+        // Should have responsive padding/margin classes
+        expect(headerContent).toMatch(/p-\d|px-\d|py-\d/)
+        expect(headerContent).toMatch(/md:|lg:|xl:/)
+      })
+    })
+
+    describe('Accessibility Features', () => {
+      test('navigation should have proper ARIA labels', () => {
+        const navPath = join(webAppPath, 'components', 'navigation.tsx')
+        const navContent = readFileSync(navPath, 'utf-8')
+        
+        expect(navContent).toContain('aria-label')
+        expect(navContent).toContain('aria-expanded')
+      })
+
+      test('header should have proper landmark roles', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        
+        // Header tag provides implicit banner role
+        expect(headerContent).toContain('<header')
+      })
+
+      test('footer should have proper landmark roles', () => {
+        const footerPath = join(webAppPath, 'components', 'footer.tsx')
+        const footerContent = readFileSync(footerPath, 'utf-8')
+        
+        // Footer tag provides implicit contentinfo role
+        expect(footerContent).toContain('<footer')
+      })
+
+      test('mobile menu button should be accessible', () => {
+        const navPath = join(webAppPath, 'components', 'navigation.tsx')
+        const navContent = readFileSync(navPath, 'utf-8')
+        
+        expect(navContent).toContain('aria-expanded')
+        expect(navContent).toContain('aria-controls')
+      })
+    })
+
+    describe('Component Integration', () => {
+      test('layout component should integrate all sub-components', () => {
+        const layoutPath = join(webAppPath, 'components', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        expect(layoutContent).toContain('Header')
+        expect(layoutContent).toContain('Footer')
+      })
+
+      test('components should be exported from index file', () => {
+        const indexPath = join(webAppPath, 'components', 'index.ts')
+        const indexContent = readFileSync(indexPath, 'utf-8')
+        
+        expect(indexContent).toContain('Layout')
+        expect(indexContent).toContain('Header')
+        expect(indexContent).toContain('Footer')
+        expect(indexContent).toContain('Navigation')
+      })
+
+      test('layout should be used in root layout', () => {
+        const rootLayoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const rootLayoutContent = readFileSync(rootLayoutPath, 'utf-8')
+        
+        // Root layout should import and use the Layout component
+        expect(rootLayoutContent).toContain('Layout')
+      })
+    })
+
+    describe('Branding and Content', () => {
+      test('header should include branding elements', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        
+        // Should have logo or brand name
+        expect(headerContent).toMatch(/logo|brand|title/i)
+      })
+
+      test('footer should include copyright information', () => {
+        const footerPath = join(webAppPath, 'components', 'footer.tsx')
+        const footerContent = readFileSync(footerPath, 'utf-8')
+        
+        expect(footerContent).toMatch(/copyright|©|\d{4}/i)
+      })
+
+      test('footer should include useful links', () => {
+        const footerPath = join(webAppPath, 'components', 'footer.tsx')
+        const footerContent = readFileSync(footerPath, 'utf-8')
+        
+        expect(footerContent).toContain('<a')
+        expect(footerContent).toContain('href')
+      })
+    })
+
+    describe('Theme Integration', () => {
+      test('layout components should support theme switching', () => {
+        const headerPath = join(webAppPath, 'components', 'header.tsx')
+        const headerContent = readFileSync(headerPath, 'utf-8')
+        
+        expect(headerContent).toContain('ThemeToggle')
+      })
+
+      test('layout should use theme-aware classes', () => {
+        const layoutPath = join(webAppPath, 'components', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should use CSS variables or theme-aware classes
+        expect(layoutContent).toMatch(/bg-background|bg-\[var\(--background\)\]/)
+      })
+    })
+  })
 })
