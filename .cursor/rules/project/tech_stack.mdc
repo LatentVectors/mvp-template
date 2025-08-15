@@ -60,6 +60,10 @@ alwaysApply: false
 - **Background Tasks**: Not initially; designed for easy upgrade (Redis + RQ/Celery) and/or LangGraph `ainvoke`
 
 ### Testing and Quality Assurance
+- **Unit Testing Framework**: vitest (fast, modern test runner with excellent TypeScript support)
+- **React Testing**: @testing-library/react + @testing-library/jest-dom + @testing-library/user-event
+- **Test Environment**: jsdom (DOM environment for component testing)
+- **Test UI**: @vitest/ui (optional web interface for test management)
 - **E2E Testing**: Playwright "happy-path" tests (signup → pay → login/gated feature)
 - **JavaScript Linting**: ESLint + eslint-config-next
 - **TypeScript Linting**: @typescript-eslint/eslint-plugin + @typescript-eslint/parser

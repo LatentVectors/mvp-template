@@ -6,6 +6,13 @@ alwaysApply: false
 
 ```text
 ~/projects/mvp_template
+├─ __specs__/                              # Product specifications and requirements
+│  └─ [date]-[feature-name]/               # Specification directories by date and feature
+│     ├─ spec-lite.md                      # Brief specification overview
+│     ├─ spec.md                           # Detailed specification document
+│     ├─ tasks.md                          # Implementation task breakdown
+│     └─ sub-specs/                        # Additional specification details
+│        └─ technical-spec.md              # Technical implementation details
 ├─ apps/                                   # All user-facing apps
 │  └─ web/                                 # Next.js (TS) marketing + blog + SPA
 │     ├─ app/                              # Next.js App Router - all routes here only
