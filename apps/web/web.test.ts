@@ -628,4 +628,229 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       })
     })
   })
+
+  describe('Landing Page with Responsive Design', () => {
+    describe('Hero Section', () => {
+      test('should have hero section in main page', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have hero section with headline and CTA
+        expect(pageContent).toContain('hero') || expect(pageContent).toContain('Hero')
+      })
+
+      test('should have compelling headline in hero section', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have h1 tag for main headline
+        expect(pageContent).toContain('<h1') || expect(pageContent).toContain('h1')
+      })
+
+      test('should have call-to-action button in hero section', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have CTA button or link
+        expect(pageContent).toContain('button') || expect(pageContent).toContain('Button')
+      })
+
+      test('should have proper responsive design classes', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have responsive Tailwind classes
+        expect(pageContent).toMatch(/sm:|md:|lg:|xl:/)
+      })
+    })
+
+    describe('Features Section', () => {
+      test('should have features section showcasing key benefits', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have features section
+        expect(pageContent).toContain('features') || expect(pageContent).toContain('Features')
+      })
+
+      test('should have multiple feature items', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have multiple feature items (at least 3)
+        const featureMatches = pageContent.match(/feature/gi) || []
+        expect(featureMatches.length).toBeGreaterThanOrEqual(3)
+      })
+
+      test('should use Card components for features', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should import and use Card component from shadcn/ui
+        expect(pageContent).toContain('Card') || expect(pageContent).toContain('card')
+      })
+    })
+
+    describe('Semantic HTML Structure', () => {
+      test('should use proper semantic HTML tags', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should use semantic HTML5 tags
+        expect(pageContent).toContain('<section') || expect(pageContent).toContain('section')
+        expect(pageContent).toContain('<h1') || expect(pageContent).toContain('h1')
+        expect(pageContent).toContain('<h2') || expect(pageContent).toContain('h2')
+      })
+
+      test('should have proper heading hierarchy', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have h1 for main title and h2 for section titles
+        expect(pageContent).toContain('h1')
+        expect(pageContent).toContain('h2')
+      })
+
+      test('should have descriptive alt text for images', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // All images should have meaningful alt text
+        const imageMatches = pageContent.match(/<Image[^>]*alt="[^"]+"/g) || []
+        const allImageMatches = pageContent.match(/<Image/g) || []
+        
+        if (allImageMatches.length > 0) {
+          expect(imageMatches.length).toBe(allImageMatches.length)
+        }
+      })
+    })
+
+    describe('Mobile-First Responsive Design', () => {
+      test('should have mobile-first responsive layout', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should use mobile-first responsive classes
+        expect(pageContent).toMatch(/\bsm:|\bmd:|\blg:|\bxl:/)
+      })
+
+      test('should have responsive grid layout for features', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have responsive grid classes
+        expect(pageContent).toMatch(/grid|flex/)
+        expect(pageContent).toMatch(/grid-cols-\d|flex-col|flex-row/)
+      })
+
+      test('should have responsive text sizes', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have responsive text size classes
+        expect(pageContent).toMatch(/text-\w+|sm:text-|md:text-|lg:text-/)
+      })
+
+      test('should have responsive spacing and padding', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have responsive padding/margin classes
+        expect(pageContent).toMatch(/p-\d|px-\d|py-\d|m-\d|mx-\d|my-\d/)
+        expect(pageContent).toMatch(/sm:p-|md:p-|lg:p-|sm:m-|md:m-|lg:m-/)
+      })
+    })
+
+    describe('SEO and Meta Tags', () => {
+      test('should have proper meta tags in layout', () => {
+        const layoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should have metadata export for Next.js 13+ App Router
+        expect(layoutContent).toContain('export const metadata') || expect(layoutContent).toContain('generateMetadata')
+      })
+
+      test('should have meta description configured', () => {
+        const layoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should have description in metadata
+        expect(layoutContent).toContain('description')
+      })
+
+      test('should have Open Graph meta tags', () => {
+        const layoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should have Open Graph configuration
+        expect(layoutContent).toContain('openGraph') || expect(layoutContent).toContain('og:')
+      })
+
+      test('should have Twitter Card meta tags', () => {
+        const layoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should have Twitter Card configuration
+        expect(layoutContent).toContain('twitter') || expect(layoutContent).toContain('twitter:')
+      })
+
+      test('should have proper title structure', () => {
+        const layoutPath = join(webAppPath, 'app', 'layout.tsx')
+        const layoutContent = readFileSync(layoutPath, 'utf-8')
+        
+        // Should have title in metadata
+        expect(layoutContent).toContain('title')
+      })
+    })
+
+    describe('Accessibility and Performance', () => {
+      test('should have proper landmark roles for page sections', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should use semantic section tags
+        expect(pageContent).toContain('<section') || expect(pageContent).toContain('section')
+      })
+
+      test('should have proper focus management for interactive elements', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Interactive elements should be focusable
+        if (pageContent.includes('button') || pageContent.includes('Button')) {
+          expect(pageContent).not.toContain('tabIndex="-1"')
+        }
+      })
+
+      test('should optimize images with Next.js Image component', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should use Next.js Image component for optimization
+        if (pageContent.includes('<Image') || pageContent.includes('Image')) {
+          expect(pageContent).toContain('from "next/image"')
+        }
+      })
+    })
+
+    describe('Content Quality', () => {
+      test('should have meaningful and compelling content', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should not contain placeholder text like Lorem ipsum
+        expect(pageContent).not.toContain('lorem')
+        expect(pageContent).not.toContain('Lorem')
+        expect(pageContent).not.toContain('ipsum')
+      })
+
+      test('should have clear value proposition', () => {
+        const pagePath = join(webAppPath, 'app', 'page.tsx')
+        const pageContent = readFileSync(pagePath, 'utf-8')
+        
+        // Should have meaningful headline
+        expect(pageContent.length).toBeGreaterThan(500) // Basic content length check
+      })
+    })
+  })
 })

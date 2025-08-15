@@ -83,8 +83,51 @@
   --border-radius-sm: calc(var(--radius) - 0.25rem);
 }
 
+.dark {
+  /* Base colors - dark mode */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #0a0a0a;
+  --card-foreground: #ededed;
+  --popover: #0a0a0a;
+  --popover-foreground: #ededed;
+
+  /* Primary colors - dark mode */
+  --primary: #f8fafc;
+  --primary-foreground: #0f172a;
+
+  /* Secondary colors - dark mode */
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+
+  /* Muted colors - dark mode */
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  /* Accent colors - dark mode */
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+
+  /* Destructive colors - dark mode */
+  --destructive: #dc2626;
+  --destructive-foreground: #f8fafc;
+
+  /* Border and input - dark mode */
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #94a3b8;
+
+  /* Chart colors - dark mode (slightly adjusted for better contrast) */
+  --chart-1: #60a5fa;
+  --chart-2: #34d399;
+  --chart-3: #fbbf24;
+  --chart-4: #f87171;
+  --chart-5: #a78bfa;
+}
+
+/* Support for system preference while still allowing manual override */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     /* Base colors - dark mode */
     --background: #0a0a0a;
     --foreground: #ededed;
