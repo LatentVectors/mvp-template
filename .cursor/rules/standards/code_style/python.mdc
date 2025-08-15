@@ -1,0 +1,210 @@
+---
+globs: *.py
+alwaysApply: false
+---
+
+# Python Code Style Rules
+
+## General Principles
+- This project uses Python 3.12. Follow best practices and coding standards for this version.
+- This project is in a Python virtual environment. Remember to activate the environment in `.venv` before executing commands that rely on Python.
+- This project uses pip and pyproject.toml. All dependencies should be declared in pyproject.toml.
+
+## File Organization & Imports
+
+### Import Ordering
+- **Standard library imports first**: Built-in modules at the top
+- **Third-party imports**: External packages (requests, pandas, etc.)
+- **Local imports**: Project modules and packages
+- **Type-only imports**: Use `from typing import TYPE_CHECKING` for circular dependencies
+- **Separate sections with blank lines**
+
+### File Naming
+- **Modules/packages**: snake_case (`user_service.py`, `api_client.py`)
+- **Classes**: PascalCase defined in snake_case files (`class UserService` in `user_service.py`)
+- **Constants files**: SCREAMING_SNAKE_CASE (`API_ENDPOINTS.py`)
+- **Test files**: `test_` prefix (`test_user_service.py`)
+- **Type definitions**: `.types.py` suffix when separating types (`user.types.py`)
+
+## Type Annotations
+
+### Core Rules
+- **ALWAYS** include full type annotations for all function parameters and return types
+- **EXCEPTION**: Test functions do not need return type annotations (they can use `-> None` or omit entirely)
+- Use typing standards for Python 3.12+: `list` instead of `List`, `str | None` instead of `Optional[str]`
+- Use `from __future__ import annotations` at the top of files for forward references
+- Use `assert_never` for exhaustive enum/literal handling in if-else chains
+- Always use new generic syntax: `class Repository[T]:` instead of TypeVar/Generic
+
+### Modern Type Patterns
+- **Type aliases**: `UserId: TypeAlias = str` for clarity
+- **TypedDict**: For structured dictionaries
+- **Protocols**: For structural typing interfaces  
+- **Literal types**: For string enums: `Status = Literal['pending', 'completed', 'failed']`
+- **Union types**: `str | bytes | None` syntax
+
+## Function & Class Design
+
+### Function Structure
+- Keep functions under 50 lines when possible
+- Use early returns to reduce nesting
+- Extract complex logic into private helper methods
+- Use type guards for complex conditional logic
+- Always include Google-style docstrings for public functions
+
+### Class Design
+- Use Pydantic `BaseModel` for simple data containers
+- Use `ClassVar` for class-level constants
+- Prefer composition over inheritance
+- Include type annotations for all attributes
+- Use Pydantic for data validation classes
+
+## Docstrings & Documentation
+
+### Google-Style Docstrings
+- Use Google-style docstrings for all public functions and classes
+- Always document: Args, Returns, Raises
+- Include examples for complex functions
+- Keep docstrings concise but informative
+
+## Code Structure & Patterns
+
+### Function Patterns
+- Use early returns for validation and error cases
+- Prefer list comprehensions over explicit loops for simple transformations
+- Use generator expressions for memory efficiency with large datasets
+- Use `map()` and `filter()` only when passing existing functions
+
+### Data Handling
+- Use `pathlib.Path` instead of string paths
+- Use `collections.defaultdict` when appropriate
+- Use `set` for membership testing over `list`
+- Use `collections.deque` for queue operations
+- Cache expensive operations with `@lru_cache`
+
+## Error Handling & Validation
+
+### Exception Handling
+- Create custom exception hierarchies with meaningful names
+- Use specific exception types, never bare `except:`
+- Always use `from e` when re-raising exceptions
+- Log exceptions with `logger.exception()` in except blocks
+- Use `logger.error(msg, exception=True)` outside except blocks
+
+### Input Validation
+- Use Pydantic for all external data validation (API requests, config)
+- Validate at system boundaries (API routes, external data)
+- Use field validators for complex validation logic
+
+## Async/Await Patterns
+
+### Async Design
+- Use `async def` for I/O bound operations
+- Use `asyncio.gather()` for concurrent operations with proper error handling
+- Use async context managers for resource management
+- Prefer `asyncio.create_task()` for fire-and-forget operations
+- Always handle exceptions in concurrent operations
+
+## Configuration and Constants
+
+### Constants
+- Define constants at module level with `typing.Final`
+- Group related constants together
+- Use PydanticSettings for application settings with `.env` file support
+- Validate environment variables at startup
+
+### Settings Pattern
+```python
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    database_url: str
+    api_key: str = Field(..., min_length=10)
+    debug: bool = False
+    
+    model_config = {"env_file": ".env"}
+
+settings = Settings()
+```
+
+## Logging
+
+### Structured Logging
+- Import logger: `from src.logger_config import logger`
+- Use structured logging with `extra` parameter for context
+- Use appropriate log levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+- Use `logger.exception()` for errors inside except blocks
+- Use `logger.error(msg, exception=True)` outside except blocks
+- Never log sensitive information (passwords, API keys, tokens)
+
+### Logging Context
+- Include relevant IDs and context in log messages
+- Use consistent field names across the application
+- Sanitize sensitive data before logging
+
+## Performance Considerations
+
+### Optimization Patterns
+- Use list comprehensions over explicit loops for simple transformations
+- Use generator expressions for large datasets
+- Cache expensive computations with `@lru_cache`
+- Use `collections.defaultdict` for grouping operations
+- Use `pathlib.Path` for all path operations
+
+## Testing Patterns
+
+### Test Structure
+- Co-locate tests: `test_user_service.py` next to `user_service.py`
+- Use descriptive test names: `test_method_scenario_expectedResult`
+- Group related tests in classes
+- Use pytest fixtures for common setup
+- Use `unittest.mock` for mocking dependencies
+- Test both success and error conditions
+- Use `pytest.mark.asyncio` for async tests
+
+### Test Organization
+- Arrange-Act-Assert pattern for test structure
+- Mock external dependencies (APIs, databases, file system)
+- Use `Mock(spec=ClassName)` for type-safe mocking
+- Test edge cases and error conditions
+
+## Security
+
+### Security Best Practices
+- Never log sensitive information (passwords, API keys, etc.)
+- Use environment variables for all configuration
+- Validate all user inputs with Pydantic models
+- Use parameterized queries for database operations
+- Use `secrets` module for generating secure tokens
+- Sanitize data before logging or displaying
+
+### Data Security
+- Use type-safe data containers (Pydantic models)
+- Validate data at system boundaries
+- Hash passwords with proper salt
+- Use HTTPS for all external communications
+
+## Anti-Patterns to Avoid
+
+### ❌ DON'T
+- Use `any` type annotations
+- Mutate function parameters or global state
+- Use bare `except:` clauses
+- Use `eval()` or `exec()` on user input
+- Use mutable default arguments
+- Import `*` from modules
+- Use string formatting with `%` operator
+- Log sensitive information
+
+### ✅ DO
+- Use specific type annotations
+- Return new objects instead of mutating
+- Catch specific exceptions with proper error handling
+- Validate and sanitize all inputs
+- Use `None` as default and create objects in function body
+- Use explicit imports
+- Use f-strings or `.format()` for string formatting
+- Implement proper logging with context
+
+## Summary
+Modern Python 3.12+ typing • Pydantic validation • Structured logging • Early returns • Type guards • Async patterns • Security first • Comprehensive testing

@@ -1,0 +1,90 @@
+---
+description: Overview of the projects tech-stack
+alwaysApply: false
+---
+## Tech Stack
+*Single source of truth for all technology choices and versions. If not specified, use latest compatible version.*
+
+### Runtimes and Package Managers
+- **Node**: 22.x LTS (enforce with `.nvmrc` file and `engines.node` in package.json)
+- **Python**: 3.12.x (enforce with `.python-version` file and pin in uv/pyproject)
+- **Package Managers**: npm (workspaces) and uv for Python
+- **Build System**: Turborepo for monorepo build caching and task orchestration
+
+### Frontend (Next.js 15, React 19, TypeScript)
+- **Framework**: Next.js 15 (App Router, Node runtime)
+- **UI Library**: React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Component Library**: shadcn/ui (template-based, generated components using Radix UI)
+- **AI Components**: AI Elements
+- **UI Primitives**: Radix UI primitives (as needed)
+- **Styling Utils**: class-variance-authority
+- **Icons**: lucide-react
+- **Validation**: Zod
+- **Immutability**: immer
+- **Forms**: react-hook-form + @hookform/resolvers
+- **Data Fetching**: @tanstack/react-query (optional)
+
+### Content and SEO (Blog/Marketing)
+- **Content Management**: contentlayer + next-contentlayer (MDX, SSG, SEO-friendly)
+- **Markdown Processing**: remark-gfm, rehype-slug, rehype-autolink-headings
+- **SEO Tools**: next-sitemap, next-seo (optional)
+
+### Auth, Data, Storage (Supabase - Default Implementation)
+- **Client Library**: @supabase/supabase-js
+- **SSR Support**: @supabase/ssr
+- **Auth UI**: @supabase/auth-ui-react (low-boilerplate UI, RLS-capable)
+- **Storage**: Supabase Storage behind abstraction (`packages/interfaces/storage`) for easy S3/DO Spaces swap
+- **Schema Management**: SQL migration files in `supabase/migrations/` (single source of truth)
+
+### Payments, Feedback, Analytics, Consent (Default Implementations)
+- **Analytics**: GA4 behind abstraction (`packages/interfaces/analytics`) (no package; use `next/script` with Consent Mode v2)
+- **Cookie Consent**: Osano/vanilla-cookieconsent via CDN v3 (no npm dependency)
+- **Payments**: Lemon Squeezy behind abstraction (`packages/interfaces/payments`) (verify webhook with Node `crypto`, no SDK required)
+- **Email**: Resend behind abstraction (`packages/interfaces/email`) - Single sending subdomain reused across MVPs
+- **Feedback**: Tally.so (no SDK; link out or embed via global "Feedback" button)
+
+### Agent Service (FastAPI, Python)
+- **Framework**: fastapi
+- **Data Models**: pydantic
+- **Server**: uvicorn[standard]
+- **Database**: SQLAlchemy + asyncpg
+- **HTTP Client**: httpx
+- **Streaming**: sse-starlette (stream LangGraph agent responses to frontend)
+- **Error Tracking**: sentry-sdk
+- **JWT**: python-jose[cryptography] or PyJWT (verify Supabase JWTs)
+- **Logging**: structlog (or loguru)
+- **AI Framework**: langgraph + langchain (if used)
+- **Hosting**: Google Cloud Run (serverless containers, scale to zero)
+- **Background Tasks**: Not initially; designed for easy upgrade (Redis + RQ/Celery) and/or LangGraph `ainvoke`
+
+### Testing and Quality Assurance
+- **E2E Testing**: Playwright "happy-path" tests (signup → pay → login/gated feature)
+- **JavaScript Linting**: ESLint + eslint-config-next
+- **TypeScript Linting**: @typescript-eslint/eslint-plugin + @typescript-eslint/parser
+- **Code Formatting**: Prettier + prettier-plugin-tailwindcss
+- **Python Testing**: pytest + pytest-asyncio
+- **Python Linting**: ruff + mypy
+- **Type Stubs**: types-requests, types-redis (as needed)
+
+### Observability and Monitoring
+- **Error Tracking**: @sentry/nextjs + sentry-sdk (Next.js + FastAPI)
+- **Build Tools**: sentry-cli (CI only)
+- **Uptime Monitoring**: UptimeRobot (free) hitting `/healthz`
+
+### Deployment & Infrastructure
+- **Frontend Hosting**: Vercel (deployed via Vercel build; no containerization required)
+- **Backend Hosting**: Google Cloud Run (containerized: Docker/OCI)
+- **Source Control**: GitHub (monorepo)
+- **Type Generation**: openapi-typescript
+- **Database CLI**: Supabase CLI (install via brew)
+- **Containerization**: Docker (multi-stage builds)
+- **Cloud CLI**: gcloud CLI for Cloud Run deploys
+
+### Email & Legal
+- **Email Service**: Resend (SMTP) - Single sending subdomain (e.g., `mail.yourdomain.com`) reused across MVPs
+- **Email Security**: SPF/DKIM/DMARC configuration on mail subdomain; DMARC policy: quarantine
+- **Legal Pages**: Privacy Policy, Terms of Service, Cookie Policy templates
+- **Compliance**: DPAs signed with Vercel, Supabase, Sentry, Resend, Lemon Squeezy, Google
+- **Data Rights**: Simple email-based process for data deletion/export requests

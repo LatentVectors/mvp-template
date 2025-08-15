@@ -1,0 +1,232 @@
+---
+description: Guidance for local development setup and configuration.
+alwaysApply: false
+---
+## Local Development Setup
+
+**Prerequisites:**
+- Node.js (use `.nvmrc` for automatic version switching)
+- Python (use `.python-version` for automatic version switching)
+- Docker Desktop (for local Supabase and optional service orchestration)
+- Supabase CLI (`brew install supabase/tap/supabase`)
+- uv for Python package management (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+
+**Complete Local Stack Setup:**
+
+1. **Clone and Install Dependencies**
+   ```bash
+   git clone <repo-url> mvp-project
+   cd mvp-project
+   npm install  # Installs all workspace dependencies
+   cd services/agent-api && uv sync  # Python dependencies
+   ```
+
+2. **Local Database (Supabase)**
+   ```bash
+   # Start local Supabase stack (Postgres, Auth, Storage, Edge Functions)
+   supabase start
+   
+   # Apply migrations to local database
+   supabase db reset
+   
+   # Generate types from local schema
+   npm run typegen:supabase:local
+   ```
+
+3. **Environment Configuration**
+   ```bash
+   # Copy environment template
+   cp .env.example .env.local
+   
+   # Configure local environment variables
+   # NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+   # NEXT_PUBLIC_SUPABASE_ANON_KEY=<from supabase start output>
+   # SUPABASE_SERVICE_ROLE_KEY=<from supabase start output>
+   # DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+   # SUPABASE_JWT_SECRET=<from supabase start output>
+   ```
+
+4. **Start Development Servers**
+   ```bash
+   # Terminal 1: Web application
+   npm run dev
+   # Runs at http://localhost:3000
+   
+   # Terminal 2: Agent API service
+   cd services/agent-api
+   uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   # Runs at http://localhost:8000
+   
+   # Terminal 3: (Optional) Background services
+   docker-compose -f infra/docker/docker-compose.yml up
+   # Starts Redis, monitoring, etc.
+   ```
+
+**Local Development Features:**
+
+- **Hot Reloading**: Both Next.js and FastAPI auto-reload on file changes
+- **Local Database**: Full Supabase stack with Auth UI, Storage, and Admin dashboard at http://localhost:54323
+- **Type Safety**: Generated types from local schema ensure type safety during development
+- **Email Testing**: Local Supabase includes Inbucket for email testing at http://localhost:54324
+- **Storage Testing**: Local Supabase Storage with filesystem backend
+- **Agent Evaluation**: Run evals against local services for faster iteration
+
+**Development Workflow Commands:**
+
+```bash
+# Type generation (run after schema changes)
+npm run typegen:all:local
+
+# Database operations
+supabase db reset          # Reset local DB with fresh migrations
+supabase db diff           # Generate new migration from schema changes
+supabase db push           # Push local changes to remote (staging/prod)
+
+# Testing
+npm run test               # Run all tests
+npm run test:e2e:local     # Run E2E tests against local stack
+cd services/agent-api && uv run pytest  # Python tests
+
+# Linting and formatting
+npm run lint               # Lint all workspaces
+npm run format             # Format all code
+
+# Production build testing
+npm run build              # Build all apps and packages
+docker build -t agent-api services/agent-api  # Test containerization
+```
+
+**Local Service URLs:**
+- **Web App**: http://localhost:3000
+- **Agent API**: http://localhost:8000
+- **Agent API Docs**: http://localhost:8000/docs
+- **Local Supabase Studio**: http://localhost:54323
+- **Local Supabase API**: http://localhost:54321
+- **Email Testing (Inbucket)**: http://localhost:54324
+- **Local Postgres**: postgresql://postgres:postgres@localhost:54322/postgres
+
+**Offline Development:**
+- Supabase local stack works completely offline
+- Agent services can work with cached models or local AI providers
+- E2E tests run against local stack without external dependencies
+- Payment webhooks can be simulated with local test data
+
+**Performance Optimization for Local Development:**
+- Use `npm run dev:turbo` for faster builds with Turborepo caching
+- Enable Next.js experimental features for faster refreshes in `next.config.mjs`
+- Use `supabase start --exclude edge-runtime` to skip Edge Functions if not needed
+- Configure `.env.local` with `LOG_LEVEL=warn` to reduce console noise
+### Local Development Setup
+
+**Prerequisites:**
+- Node.js 22.x LTS (use `.nvmrc` for automatic version switching)
+- Python 3.12.x (use `.python-version` for automatic version switching)
+- Docker Desktop (for local Supabase and optional service orchestration)
+- Supabase CLI (`brew install supabase/tap/supabase`)
+- uv for Python package management (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+
+**Complete Local Stack Setup:**
+
+1. **Clone and Install Dependencies**
+   ```bash
+   git clone <repo-url> mvp-project
+   cd mvp-project
+   npm install  # Installs all workspace dependencies
+   cd services/agent-api && uv sync  # Python dependencies
+   ```
+
+2. **Local Database (Supabase)**
+   ```bash
+   # Start local Supabase stack (Postgres, Auth, Storage, Edge Functions)
+   supabase start
+   
+   # Apply migrations to local database
+   supabase db reset
+   
+   # Generate types from local schema
+   npm run typegen:supabase:local
+   ```
+
+3. **Environment Configuration**
+   ```bash
+   # Copy environment template
+   cp .env.example .env.local
+   
+   # Configure local environment variables
+   # NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+   # NEXT_PUBLIC_SUPABASE_ANON_KEY=<from supabase start output>
+   # SUPABASE_SERVICE_ROLE_KEY=<from supabase start output>
+   # DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres
+   # SUPABASE_JWT_SECRET=<from supabase start output>
+   ```
+
+4. **Start Development Servers**
+   ```bash
+   # Terminal 1: Web application
+   npm run dev
+   # Runs at http://localhost:3000
+   
+   # Terminal 2: Agent API service
+   cd services/agent-api
+   uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   # Runs at http://localhost:8000
+   
+   # Terminal 3: (Optional) Background services
+   docker-compose -f infra/docker/docker-compose.yml up
+   # Starts Redis, monitoring, etc.
+   ```
+
+**Local Development Features:**
+
+- **Hot Reloading**: Both Next.js and FastAPI auto-reload on file changes
+- **Local Database**: Full Supabase stack with Auth UI, Storage, and Admin dashboard at http://localhost:54323
+- **Type Safety**: Generated types from local schema ensure type safety during development
+- **Email Testing**: Local Supabase includes Inbucket for email testing at http://localhost:54324
+- **Storage Testing**: Local Supabase Storage with filesystem backend
+- **Agent Evaluation**: Run evals against local services for faster iteration
+
+**Development Workflow Commands:**
+
+```bash
+# Type generation (run after schema changes)
+npm run typegen:all:local
+
+# Database operations
+supabase db reset          # Reset local DB with fresh migrations
+supabase db diff           # Generate new migration from schema changes
+supabase db push           # Push local changes to remote (staging/prod)
+
+# Testing
+npm run test               # Run all tests
+npm run test:e2e:local     # Run E2E tests against local stack
+cd services/agent-api && uv run pytest  # Python tests
+
+# Linting and formatting
+npm run lint               # Lint all workspaces
+npm run format             # Format all code
+
+# Production build testing
+npm run build              # Build all apps and packages
+docker build -t agent-api services/agent-api  # Test containerization
+```
+
+**Local Service URLs:**
+- **Web App**: http://localhost:3000
+- **Agent API**: http://localhost:8000
+- **Agent API Docs**: http://localhost:8000/docs
+- **Local Supabase Studio**: http://localhost:54323
+- **Local Supabase API**: http://localhost:54321
+- **Email Testing (Inbucket)**: http://localhost:54324
+- **Local Postgres**: postgresql://postgres:postgres@localhost:54322/postgres
+
+**Offline Development:**
+- Supabase local stack works completely offline
+- Agent services can work with cached models or local AI providers
+- E2E tests run against local stack without external dependencies
+- Payment webhooks can be simulated with local test data
+
+**Performance Optimization for Local Development:**
+- Use `npm run dev:turbo` for faster builds with Turborepo caching
+- Enable Next.js experimental features for faster refreshes in `next.config.mjs`
+- Use `supabase start --exclude edge-runtime` to skip Edge Functions if not needed
+- Configure `.env.local` with `LOG_LEVEL=warn` to reduce console noise

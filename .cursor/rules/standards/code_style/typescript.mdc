@@ -1,0 +1,206 @@
+---
+globs: *.ts
+alwaysApply: false
+---
+
+# TypeScript Code Style Rules
+
+## File Organization & Imports
+
+### Import Ordering
+- **Node built-ins first**: `node:*` imports at the top
+- **External libraries**: All third-party packages
+- **Internal packages**: `@/` aliased imports and relative imports
+- **Type-only imports**: Always use `import type` for types
+- **Separate sections with blank lines**
+
+### Import Style
+- Use named imports over default imports when possible
+- Group related imports on single lines: `import { a, b, c } from 'module'`
+- Use import aliases for deeply nested paths: `@/lib/utils` instead of `../../../lib/utils`
+- Always use file extensions for relative imports in packages: `./types.js` not `./types`
+
+### File Naming
+- **Utilities/functions**: camelCase (`getUserData.ts`)
+- **Constants**: SCREAMING_SNAKE_CASE (`API_ENDPOINTS.ts`)
+- **Types**: camelCase with `.types.ts` suffix (`user.types.ts`)
+- **Generated files**: Never edit; always regenerate (`supabase.ts`, `agent-api.ts`)
+- **Modules/packages**: kebab-case (`user-service.ts`)
+
+## Type Definitions
+
+### Type vs Interface
+- **Use `type` for**: Unions, intersections, computed types, and simple object shapes
+- **Use `interface` for**: Objects that may need extension, especially in shared packages
+- **Prefer `type` by default** unless extension is explicitly needed
+
+### Type Naming
+- **PascalCase for all types**: `UserProfile`, `ApiResponse`, `DatabaseSchema`
+- **Suffix descriptive types**: `ApiResponseData`, `CreateUserRequest`
+- **Avoid generic prefixes**: Use `User` not `IUser` or `TUser`
+
+### Utility Types
+- Prefer built-in utility types: `Partial<T>`, `Pick<T, K>`, `Omit<T, K>`
+- Create custom utilities in `packages/types/src/utils.ts` for reuse
+- Use `as const` for literal object types and arrays
+
+### Generics
+- **Single letter for simple cases**: `T`, `K`, `V`
+- **Descriptive names for complex cases**: `TUser`, `TApiResponse`
+- **Default generic parameters** when sensible: `ApiResponse<T = unknown>`
+- **Constrain generics** appropriately: `T extends Record<string, unknown>`
+
+## Function & Variable Declarations
+
+### Function Style
+- **Use function declarations** for top-level functions: `function getUserData() {}`
+- **Use arrow functions** for inline functions and callbacks
+- **Prefer async/await** over Promise chains
+- **Use function overloads** for functions with multiple signatures
+
+### Variable Declarations
+- **Use `const` by default**, `let` when reassignment needed, never `var`
+- **Destructure objects/arrays** when accessing multiple properties
+- **Use meaningful names**: `userData` not `data`, `isLoading` not `loading`
+- **Boolean prefixes**: `is`, `has`, `should`, `can` (`isAuthenticated`, `hasPermission`)
+
+### Return Types
+- **Always declare return types** for exported functions
+- **Infer return types** for simple internal functions
+- **Use explicit `void`** for functions with no return value
+- **Prefer specific types** over `any` or `unknown`
+
+## Object & Array Handling
+
+### Object Construction
+- **Use object spread** for copying: `{ ...user, name: 'New Name' }`
+- **Use property shorthand**: `{ name, email }` instead of `{ name: name, email: email }`
+- **Use computed properties** when dynamic: `{ [key]: value }`
+- **Prefer object destructuring** for parameter objects
+
+### Array Operations
+- **Use array methods** over for loops: `map`, `filter`, `reduce`, `find`
+- **Use spread operator** for copying: `[...items, newItem]`
+- **Use `Array.from()`** for array-like objects
+- **Prefer `includes()`** over `indexOf() !== -1`
+
+### Immutability
+- **Never mutate imported objects** or function parameters
+- **Use readonly modifiers** for data that shouldn't change
+- **Prefer functional updates** over mutation
+- **Use `Object.freeze()`** for immutable configuration objects
+
+## Error Handling & Validation
+
+### Error Handling
+- **Use specific error types**: Custom error classes over generic `Error`
+- **Always handle async errors**: Use try/catch with async/await
+- **Throw early, catch late**: Validate inputs at function boundaries
+- **Use error objects** with structured data: `{ message, code, details }`
+
+### Input Validation
+- **Use Zod schemas** for all external data (API requests)
+- **Define schemas once**, derive types: `type User = z.infer<typeof UserSchema>`
+- **Validate at boundaries**: API routes, external data
+- **Use discriminated unions** for variant data types
+
+### Null & Undefined
+- **Use nullish coalescing**: `value ?? defaultValue`
+- **Use optional chaining**: `user?.profile?.name`
+- **Prefer optional properties** over `| undefined`: `name?: string`
+- **Use non-null assertion sparingly**: Only when TypeScript can't infer
+
+## Server-Side & API Patterns
+
+### Database & External APIs
+- **Use repository pattern**: Separate data access from business logic
+- **Type database responses**: Generate types from schema, don't hand-write
+- **Use branded types** for IDs: `type UserId = string & { __brand: 'UserId' }`
+- **Prefer async/await** for database operations
+
+### Configuration & Environment
+- **Type environment variables**: Create env schema with Zod
+- **Use const assertions** for configuration objects
+- **Centralize configuration**: Single source per app/service
+- **Validate env vars at startup**: Fail fast on missing configuration
+
+## Performance & Optimization
+
+### Bundle Size
+- **Prefer tree-shakable imports**: `import { specific } from 'library'`
+- **Avoid importing entire libraries**: Import specific functions
+- **Use type-only imports**: `import type` for types used only in types
+
+### Runtime Performance
+- **Prefer early returns**: Reduce nesting and improve readability
+- **Cache expensive operations**: Use appropriate caching strategies
+- **Use memoization**: For expensive pure function calculations
+- **Avoid unnecessary object creation**: In hot code paths
+
+## Documentation & Comments
+
+### JSDoc Comments
+- **Document all exported functions**: Parameters, return types, examples
+- **Use `@param` and `@returns`**: Describe complex parameters
+- **Add `@example`** for non-obvious usage
+- **Use `@deprecated`** for legacy code
+
+### Inline Comments
+- **Explain "why" not "what"**: Business logic reasoning, not code syntax
+- **Comment complex type manipulations**: Generic constraints, mapped types
+- **Document workarounds**: External library quirks, browser compatibility
+- **Remove TODO comments**: Convert to GitHub issues or implement
+
+## Testing Considerations
+
+### Test Types
+- **Write testable code**: Pure functions, dependency injection
+- **Type test fixtures**: Use same types as production code
+- **Mock external dependencies**: APIs, databases, file system
+- **Test error conditions**: Invalid inputs, network failures
+
+### Test Organization
+- **Co-locate tests**: `module.test.ts` next to `module.ts`
+- **Use descriptive test names**: What scenario is being tested
+- **Group related tests**: Use `describe` blocks for organization
+- **Test public interfaces**: Focus on behavior, not implementation
+
+## Code Quality & Maintenance
+
+### Code Review Guidelines
+- **Prefer explicit over implicit**: Clear type annotations over inference
+- **Favor composition over inheritance**: Use mixins, higher-order functions
+- **Keep functions small**: Single responsibility, easy to test
+- **Use meaningful variable names**: Self-documenting code
+
+### Refactoring Principles
+- **Extract reusable logic**: Move to packages for cross-app sharing
+- **Prefer pure functions**: Easier to test and reason about
+- **Use discriminated unions**: For variant data types
+- **Apply single responsibility**: Each function/class has one job
+
+### Deprecated Patterns
+- **Avoid**: `any` type (use `unknown` instead)
+- **Avoid**: Function overloading without clear benefit
+- **Avoid**: Deep nesting (prefer early returns)
+- **Avoid**: Mutable global state (use dependency injection)
+- **Avoid**: `as` type assertions (prefer type guards)
+
+## Project-Specific Rules
+
+### Generated Types
+- **Never edit generated files**: `packages/types/supabase.ts`, `packages/types/agent-api.ts`
+- **Extend generated types**: Create new types that extend generated ones
+- **Re-export for convenience**: Create barrel exports in `packages/types/index.ts`
+
+### Package Structure
+- **Use barrel exports**: Single entry point per package
+- **Minimize inter-package dependencies**: Keep packages focused
+- **Version packages together**: Monorepo versioning strategy
+- **Export only what's needed**: Internal utilities stay internal
+
+### Monorepo Considerations
+- **Use workspace references**: `@packages/types` not relative imports
+- **Share common config**: ESLint, TypeScript, Prettier configs
+- **Consistent naming**: Same patterns across all apps and packages
+- **Type-safe boundaries**: Strict typing at package boundaries

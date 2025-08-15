@@ -1,0 +1,335 @@
+---
+description: Overview of the project and its key decision and requirements.
+alwaysApply: false
+---
+# MVP Template
+A reusable, minimal-cost, low‑boilerplate monorepo template that lets you ship a production‑ready MVP (landing, blog, gated app) in a day, then reuse the same stack to launch future products with minimal changes.
+
+## Introduction & Overview
+
+### Priorities
+- **Speed**: Zero/near‑zero setup; copy/paste template; deploy.
+- **Simplicity**: Few moving parts; free tiers; minimal custom code.
+- **Reuse**: Works across many MVPs; one sending domain for emails; one feedback form; shared packages.
+- **Clarity**: Predictable file placement so humans and LLMs always know where things belong.
+- **Compliance‑light**: Legal pages, cookie consent, and DPAs out‑of‑the‑box.
+
+### Mental Model
+- **Single trunk**: One repo contains a web app, optional backend services, shared packages, infra, and DB schema.
+- **Schema‑first**: Postgres schema is defined once in SQL migrations; TypeScript/Python types are generated from the schema and OpenAPI.
+- **12‑factor approach**: Env‑based config, stateless services, easy provider portability.
+- **Security by default**: Auth baked in, server checks, RLS capable, strict placement rules.
+
+### Built‑in MVP Capabilities
+- Public landing + blog with full SEO optimization
+- Authentication flows and plan/usage checks server‑side
+- Payment processing with webhook handling
+- File storage with swappable backends
+- Legal compliance: Privacy, Terms, Cookie Policy pages; GDPR cookie consent banner
+- User feedback collection system
+- End-to-end testing for critical user flows
+
+### Core Paradigms
+- **Frontend-first**: Static generation for public content, single-page app for authenticated features
+- **Database-centric**: Supabase as primary data layer with client reads under RLS and privileged server operations
+- **Agent services optional**: Separate Python services with direct database access and JWT authentication
+- **Generated, not written**: All types generated from authoritative sources
+- **Interface-first abstractions**: Define minimal interfaces for infrastructure providers with default implementations (storage, payments, email, analytics) to enable swapping when needed
+
+### Architecture Overview
+- **Frontend**: Next.js web application with modern React patterns
+- **Backend**: Optional FastAPI services for AI/agent functionality
+- **Data**: Supabase for database, auth, and storage
+- **Observability**: Sentry for error tracking and simple uptime monitoring
+- **CI/CD**: GitHub Actions with automated deployment pipelines
+
+### Development Philosophy
+- Schema changes drive type generation
+- Deployment automation from day one
+- Provider-managed secrets and configuration
+- Clear separation between applications, services, and shared code
+
+### Extensibility
+- Add new services under `services/*` without touching existing code
+- Add packages to share code; add more apps under `apps/*`
+- Introduce background processing later without restructuring
+- Swap storage or auth providers with minimal changes due to clear interfaces
+
+## Project Structure
+- See: @.cursor/rules/project/structure.mdc
+
+## Technology Stack
+- See: @.cursor/rules/project/tech_stack.mdc
+
+## Core Architecture & Patterns
+
+### Data & Schema (Schema-first)
+- **Single source of truth**: Define all tables/RLS via SQL in `supabase/migrations/**` only
+- **Minimal baseline**: `users` (auth id, email), `subscriptions` (status, plan), `usage_counters` (metric, window)
+- **Generated types**: Never hand-write; always generate from schema (see [Development Workflow](#development-workflow) for commands)
+- **Client libs**: Next.js uses `@supabase/supabase-js` with `Database` generics; FastAPI uses SQLAlchemy or `asyncpg`
+- **Best practices**: Prefer narrow tables with explicit FKs; avoid JSONB for core models; use idempotent, append-only migrations
+
+### Auth & Authorization (Supabase-first)
+- **Frontend access**: 
+  - Use `@supabase/auth-ui-react` for login/signup/reset
+  - Client queries with `anon` key + RLS policies for reads/simple writes
+  - Sensitive operations via Next route handlers (server-side client)
+- **Server access**: 
+  - Next route handlers: server client with plan/usage checks
+  - FastAPI: verify Supabase JWT (HS256) for user identity; direct DB access for agent objects
+- **Feature gating**: Lemon Squeezy webhook updates `subscriptions`; gate on server before executing
+- **Security posture**: Client reads permitted under RLS; never use service role on client; keep entitlement checks server-side
+
+### Infrastructure Abstractions (Ports/Adapters Pattern)
+- **Storage Interface**: `StoragePort` with minimal methods (`upload`, `getUrl`, `delete`) in `packages/interfaces/storage/src/port.ts`
+  - **Default Implementation**: `SupabaseStorage`; add `S3Storage` later without touching call sites
+  - **Path conventions**: `userId/entity/yyyy/mm/uuid.ext` format; store content-type metadata; prefer signed URLs for access
+  - **Binding**: `apps/web/lib/providers/storage.ts` binds `StoragePort` to current implementation
+- **Payment Interface**: `PaymentPort` with minimal methods (`createCheckout`, `verifyWebhook`) in `packages/interfaces/payments/src/port.ts`
+  - **Default Implementation**: `LemonSqueezy`; add `Stripe` later without touching call sites
+  - **Binding**: `apps/web/lib/providers/payments.ts` binds `PaymentPort` to current implementation
+- **Email Interface**: `EmailPort` with minimal methods (`send`) in `packages/interfaces/email/src/port.ts`
+  - **Default Implementation**: `Resend`; add `SendGrid` later without touching call sites
+  - **Binding**: `apps/web/lib/providers/email.ts` binds `EmailPort` to current implementation
+- **Analytics Interface**: `AnalyticsPort` with minimal methods (`track`, `identify`) in `packages/interfaces/analytics/src/port.ts`
+  - **Default Implementation**: `GA4`; add `Mixpanel` later without touching call sites
+  - **Binding**: `apps/web/lib/providers/analytics.ts` binds `AnalyticsPort` to current implementation
+
+### Cookie Consent + GA4
+- **Banner**: Osano/vanilla-cookieconsent (free CDN)
+- **Consent Mode v2**: default "denied" in EU; update to "granted" after Accept; delay GA pageview until consent
+- **Cookie Policy**: explain categories and how to withdraw consent
+
+### Payments Flow (Default: Lemon Squeezy)
+- **Webhook**: Next.js route handler verifies signature via PaymentPort interface, updates `subscriptions`
+- **Client**: after purchase, poll or listen for webhook-completed state to unlock features
+- **Entitlements**: server checks on protected routes; optional middleware for gated pages
+
+### Agent API (FastAPI)
+- **Endpoints**
+  - `POST /api/agent/jobs` create job
+  - `GET /api/agent/jobs/{id}` status/result
+  - `GET /api/agent/stream/{id}` SSE stream of LangGraph agent events to the frontend
+- **Auth**
+  - `Authorization: Bearer <supabase-access-token>`
+  - Validate token with Supabase JWT secret; extract `sub` (user id)
+
+### Feedback (Tally.so)
+- **Single form** reused across MVPs
+- **Global button** with app metadata (hidden fields) and optional prefill of user email
+- **Placement**: footer link + floating action button
+
+### Legal Pages and GDPR
+- **Pages**: `app/privacy`, `app/terms`, `app/cookies`; link in footer
+- **Generators**: TermsFeed / GetTerms / Termly / iubenda (paste content; update app name/email)
+- **GDPR baseline**
+  - Cookie consent + Consent Mode v2
+  - Contact for deletion/export; list subprocessors
+  - Sign/accept DPAs (keep copies)
+  - Configure GA IP anonymization; prefer EU regions if targeting EU users
+
+## Security
+
+### Access Control & Authentication
+- **CORS**: Allowlist Vercel domains for agent API
+- **Rate limiting**: Per user/IP limits (Next API: 60 req/min/user, 300 req/min/IP; Agent API: 30 req/min/user, 120 req/min/IP; max 1 SSE stream/user; Webhooks: 5 req/min/IP with idempotency by event ID)
+- **Webhook verification**: Verify signatures (Lemon Squeezy)
+- **Authorization**: Client-side auth for UX only; always enforce server-side
+- **Session management**: 7-day rolling sessions with refresh; email verification required
+
+### Data Protection
+- **HTTPS**: HTTPS only, security headers (use `next-safe` package or custom implementation)
+- **Secrets management**: Vercel env for web; GCP Secret Manager for agent; never hardcode
+- **Service role protection**: Never use service role client-side; avoid leaking secrets into `NEXT_PUBLIC_*`
+- **Schema isolation**: Never define schema or RLS in application code
+- **Storage security**: Always use `StoragePort` abstraction; never make ad-hoc storage SDK calls
+
+### Best Practices
+- Keep sensitive operations server-side only
+- Use RLS for client-accessible data
+- Validate all inputs at API boundaries
+- Scrub PII from logs and error messages
+- Regular security updates for all dependencies
+
+## Observability
+
+### Error Tracking & Monitoring
+- **Error Tracking**: Sentry for Next.js (client + server, upload source maps) + FastAPI (ASGI middleware, tag user id)
+- **Uptime Monitoring**: UptimeRobot hitting `/healthz`; Sentry alerts on issues/spikes
+- **Performance Monitoring**: Basic metrics via Vercel and Cloud Run dashboards
+
+### Logging & Debugging
+- **Structured Logging**: Use structured logs with request/user ID correlation
+- **Log Security**: Avoid PII; scrub tokens/keys; sample aggressively in production
+- **Log Retention**: Cloud Run logs (30 days), Sentry (30 days)
+
+### Future Observability
+- **Metrics/Tracing**: Add Prometheus/OTel when deeper observability needed
+- **Custom Dashboards**: Build specific monitoring for business metrics
+
+## Development Workflow
+
+### Local Development Setup
+
+- See: @.cursor/rules/local_dev.mdc
+
+### Type Generation (Single Source of Truth)
+- **Supabase Types**: `node scripts/typegen-supabase.mjs`
+  - Generates: `packages/types/supabase.ts`
+  - Command: `supabase gen types typescript --schema public > packages/types/supabase.ts`
+- **Agent API Types**: `node scripts/typegen-agent.mjs`
+  - Generates: `packages/types/agent-api.ts`
+  - Command: `npx openapi-typescript https://<agent-api>/openapi.json -o packages/types/agent-api.ts`
+
+### Testing Strategy
+- **End-to-End Testing**: Playwright smoke tests for critical flows (signup → pay → gated features)
+  - Location: `e2e/playwright/tests/**`
+  - Focus: "Happy path" user journeys
+  - Environment: Run against staging
+- **Unit & Integration Testing**: 
+  - Repositories and services are testable
+  - Mock network calls and LLM interactions
+  - Python: pytest + pytest-asyncio
+- **Agent Evaluation**: 
+  - LLM behavior checks in `services/agent-api/evals/**`
+  - Use evaluation frameworks, not unit tests for LLM-powered nodes directly
+  - Unit tests ARE appropriate for helper functions, input validation, and non-LLM logic within nodes
+- **CI/CD Testing**: Automated lint, typecheck, unit tests, E2E smoke tests, typegen drift checks
+
+### API Development Standards
+- **Next.js APIs**: Keep minimal (webhooks, server-only helpers)
+- **FastAPI Services**: Pydantic DTOs at boundaries; repository pattern for DB access
+- **Input Validation**:
+  - Web: Zod schemas per route/form; parse before handling
+  - Agent API: Pydantic models; fail-fast with explicit error codes
+- **API Versioning**: Version external APIs if they stabilize (e.g., `/v1/*`)
+
+### Frontend Development Guidelines
+- **Component Architecture**: React Server Components by default; mark interactive with `"use client"`
+- **Form Handling**: Validate with Zod + `react-hook-form`; derive field types from Zod schema
+- **Accessibility**: Semantic HTML, focus states, labels, avoid keyboard traps
+- **SEO Implementation**: Next Metadata API, `next-sitemap`, OG images; MDX in `content/posts/**`
+
+### Performance Optimization
+- **Rendering Strategy**: SSG for marketing/blog/legal; SPA for gated app; avoid SSR/ISR
+- **Caching**: Cache stable fetches; set appropriate revalidation
+- **Bundle Management**: Minimize client JS; keep large dependencies server-side
+- **Infrastructure**: Accept cold starts; set min instances only if needed
+
+### Streaming Implementation (SSE)
+- **Purpose**: Stream LangGraph agent events/tokens to frontend
+- **Protocol**: `text/event-stream`; no buffering; heartbeat every 15–30s
+- **Authentication**: Validate on connect; close on auth change or error
+- **Client Handling**: Exponential backoff retry on connection issues
+
+## Environments & Deployment
+
+### Environment Configuration
+
+**Next.js (Web App):**
+- `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anonymous key (safe for client)
+- `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (server only)
+- `NEXT_PUBLIC_GA_ID` - Google Analytics measurement ID
+- `SENTRY_AUTH_TOKEN` - Sentry authentication token for source maps
+- `SENTRY_DSN` - Sentry error tracking endpoint
+- `LEMONSQUEEZY_SIGNING_SECRET` - Webhook signature verification
+- `LEMONSQUEEZY_STORE_ID` - Lemon Squeezy store identifier
+- `NEXT_PUBLIC_TALLY_URL` - Tally feedback form URL
+- `AGENT_API_URL` - Agent API base URL for server-side calls
+
+**FastAPI (Agent Service):**
+- `DATABASE_URL` - Supabase Postgres connection string
+- `SUPABASE_JWT_SECRET` - JWT verification secret from Supabase
+- `ALLOWED_ORIGINS` - CORS allowed origins (comma-separated)
+- `SENTRY_DSN` - Sentry error tracking endpoint
+- `OPENAI_API_KEY` - OpenAI API key (or other provider keys as needed)
+
+### Environment Management
+- **Environments**: Separate projects per env (Supabase, Vercel, Cloud Run)
+- **Regions**: Supabase (us-east-1), Cloud Run (us-east1), Sentry (US)
+- **Domains**:
+  - Web (prod): `https://example.com` and `https://app.example.com`
+  - Web (staging): `https://staging.example.com`
+  - Agent API (prod): `https://api.example.com`
+  - Agent API (staging): `https://api-staging.example.com`
+- **Container Registry**: Google Artifact Registry (us): `us-docker.pkg.dev/<gcp-project>/agent/agent-api:<git-sha>` (immutable git-sha tags; optional aliases: `staging-<sha>`, `prod-<sha>`)
+- **OpenAPI Documentation**: Staging has public `/openapi.json`; Production is token-gated or disabled; Typegen targets staging URL in CI
+- **Data Retention**: Supabase PITR (prod 30 days, staging 7 days), Sentry (30 days), Cloud Run logs (30 days)
+
+### Configuration Defaults & Standards
+- **Database Schema**: Keep schema in `supabase/migrations`; generate TS types after each change
+- **Storage Configuration**: Bind storage via `packages/interfaces/storage` to Supabase now; add S3 implementation later without changing app code.
+- **Form Validation**: Use Zod + react-hook-form for all interactive forms
+- **Auth Configuration**: Email/password + magic link; email verification required; 7-day rolling session
+- **Billing Models**: Trial-based or usage-based (configurable via env vars)
+- **Entitlements**: Server-side gating; warn at 90% quota, block at 100%
+- **Email Configuration**: From: `no-reply@mail.example.com`; Reply-To: `support@example.com`
+- **SSE Protocol**: Heartbeat every 20s; exponential backoff; idle timeout 10m
+- **Testing Environment**: E2E against staging; Lemon Squeezy test mode
+
+### Billing Configuration
+- **Billing Model**: Configure via `BILLING_MODEL = 'trial' | 'usage'`
+- **Trial-based Subscriptions**:
+  - Environment variables: `TRIAL_DAYS`, `PLAN_TIERS = ['basic','pro']`, `PRICE_BASIC`, `PRICE_PRO`
+  - No credit card required during trial; convert to paid plan after trial
+- **Usage-based Billing**:
+  - Environment variables: `FREE_CREDITS`, `CREDIT_UNIT_NAME` (e.g., "runs"), optional `USAGE_TIERS`
+  - Allow one or more usage tiers; hard cap after free credits in MVP
+- **Reset Window**: Monthly (UTC) for both billing models
+
+### CI/CD Pipeline
+- **Build System**: Turborepo for efficient build caching and task orchestration across workspaces
+- **Code Quality**: ESLint, TypeScript, Prettier on all code
+- **Testing**: Unit tests, integration tests, Playwright E2E on staging
+- **Type Generation**: Automated Supabase and OpenAPI type generation
+- **Deployment Strategy**: 
+  - Web: Vercel auto-deploy on `main` branch
+  - Agent: Cloud Run deployment via GitHub Actions
+- **Branch Mapping**: `main` → prod, `staging` → staging, PRs → previews
+
+### Deployment Procedures
+- **Web Deployment**: Automatic via Vercel (no containerization)
+- **Agent Deployment**: `infra/cloudrun/deploy.sh` builds container and deploys to Cloud Run
+- **Database Migrations**: Manual via Supabase CLI (`supabase db push`)
+- **Rollback Strategy**: 
+  - Web: Redeploy previous Vercel build
+  - Agent: Pin previous Cloud Run revision to 100% traffic
+
+### Monitoring & Alerts
+- **Health Monitoring**: `/healthz` endpoints monitored by UptimeRobot
+- **Error Alerting**: Sentry alerts on new issues and error spikes
+- **Performance Tracking**: Basic metrics via Vercel and Cloud Run dashboards
+- **Log Correlation**: Structured logging with request/user correlation IDs
+
+## Standards & Best Practices
+
+### Development Philosophy
+- Keep it simple; minimize moving parts and boilerplate
+- Single source of truth for schema; generate types, don't hand-write
+- Clear boundaries between `apps/`, `services/`, `packages/`, and `supabase/`
+
+### Naming and Conventions
+- **Migrations**: `NNNN_description.sql` ascending integers; each file idempotent
+- **Environment Variables**: Next public keys start with `NEXT_PUBLIC_`; never commit service role keys
+- **Services**: New services under `services/<service-name>/` with consistent structure
+- **Apps**: New UIs under `apps/<app-name>/` with own `app/`, `components/`, `lib/`
+- **Generated Files**: Only in `packages/types/**`; overwritten by scripts
+
+### Architectural Patterns
+- **Ports and Adapters**: For swappable infrastructure (storage, email)
+- **Repository Pattern**: For DB access; no SQL inside handlers
+- **DTOs + Validation**: At boundaries (Zod/Pydantic)
+- **Event-driven Processing**: Idempotent webhook processing with explicit persistence
+- **Small Composable Agents**: Orchestration separated from domain services
+
+### Growth Path (No Refactors Required)
+- **Background Processing**: Add `services/worker/` (Redis + RQ/Celery) later
+- **Additional Apps**: Add `apps/admin/` or `services/payments/` without touching existing layout
+- **Storage Swap**: Add `packages/interfaces/storage/src/s3.ts` and change binding in `apps/web/lib/providers/storage.ts`
+- **Advanced Monitoring**: Add Prometheus/OTel when deeper observability needed
+- **CMS Integration**: Add Tina/Sanity if non-technical authors need content editing
+
+# Roadmap
+- See: @.cursor/rules/project/roadmap.md

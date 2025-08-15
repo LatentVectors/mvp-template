@@ -1,0 +1,224 @@
+---
+description: Overview of the projects structure.
+alwaysApply: false
+---
+# Project Structure
+
+```text
+~/projects/mvp_template
+├─ apps/                                   # All user-facing apps
+│  └─ web/                                 # Next.js (TS) marketing + blog + SPA
+│     ├─ app/                              # Next.js App Router - all routes here only
+│     │  ├─ (marketing)/                   # Public marketing routes (route group)
+│     │  │  ├─ page.tsx                    # Landing page (route: /)
+│     │  │  └─ layout.tsx                  # Marketing layout wrapper
+│     │  ├─ blog/                          # Blog routes
+│     │  │  ├─ page.tsx                    # Blog index
+│     │  │  └─ [slug]/page.tsx             # Individual blog post pages
+│     │  ├─ (app)/                         # Authenticated app shell (route group)
+│     │  │  ├─ layout.tsx                  # Protected app layout
+│     │  │  └─ page.tsx                    # Main app dashboard
+│     │  ├─ privacy/page.tsx               # Legal: Privacy Policy page
+│     │  ├─ terms/page.tsx                 # Legal: Terms of Service page
+│     │  ├─ cookies/page.tsx               # Legal: Cookie Policy page
+│     │  ├─ api/                           # Next.js route handlers only
+│     │  │  └─ webhooks/
+│     │  │     └─ lemonsqueezy/route.ts    # Lemon Squeezy webhook handler (verify + update subscriptions)
+│     │  ├─ sitemap.ts                     # SEO: Dynamic sitemap generation
+│     │  ├─ robots.txt/route.ts            # SEO: Robots.txt handler
+│     │  ├─ opengraph-image.tsx            # SEO: OpenGraph image generation
+│     │  └─ layout.tsx                     # Root layout (GA4 + cookie banner initialization)
+│     ├─ components/                       # React components
+│     │  ├─ ui/                            # shadcn/ui components (auto-generated, don't edit manually)
+│     │  ├─ blog/                          # Blog-specific components (CodeBlock, TOC, etc.)
+│     │  ├─ marketing/                     # Marketing page components (Hero, CTA, Pricing, etc.)
+│     │  ├─ feedback/FeedbackButton.tsx    # Tally feedback button (uses NEXT_PUBLIC_TALLY_URL)
+│     │  └─ cookie/CookieBanner.tsx        # Cookie consent banner (Osano/vanilla-cookieconsent wrapper)
+│     ├─ content/                          # Blog content
+│     │  └─ posts/                         # Blog posts (MDX files only) - parsed by Contentlayer
+│     │     └─ hello-world.mdx             # Example blog post
+│     ├─ lib/                              # Utility libraries and configurations
+│     │  ├─ supabase/                      # Supabase client configurations (no ad-hoc clients elsewhere)
+│     │  │  ├─ client.ts                   # Browser Supabase client (typed with generated types)
+│     │  │  ├─ server.ts                   # Server Supabase client (service role for privileged operations)
+│     │  │  └─ auth.ts                     # Session helpers and route guards (no SSR)
+│     │  ├─ providers/                     # Infrastructure provider bindings
+│     │  │  ├─ storage.ts                  # Binds StoragePort interface to SupabaseStorage implementation
+│     │  │  ├─ payments.ts                 # Binds PaymentPort interface to LemonSqueezy implementation
+│     │  │  ├─ email.ts                    # Binds EmailPort interface to Resend implementation
+│     │  │  └─ analytics.ts                # Binds AnalyticsPort interface to GA4 implementation
+│     │  ├─ authz/entitlements.ts          # Plan/usage checks and feature gating (reads Supabase)
+│     │  └─ config.ts                      # App configuration and environment variables
+│     ├─ styles/                           # Styling
+│     │  └─ globals.css                    # Global CSS and Tailwind imports
+│     ├─ public/                           # Static assets (images, favicon, etc.)
+│     ├─ config/                           # Build and SEO configurations
+│     │  ├─ contentlayer.config.ts         # Contentlayer MDX processing config
+│     │  ├─ next-seo.config.ts             # Next-SEO configuration
+│     │  └─ next-sitemap.config.js         # Sitemap generation config
+│     ├─ middleware.ts                     # Optional auth gating for (app) routes
+│     ├─ next.config.mjs                   # Next.js config (withContentlayer + Sentry integration)
+│     ├─ package.json                      # Web app dependencies
+│     ├─ tsconfig.json                     # TypeScript configuration
+│     ├─ tailwind.config.ts                # Tailwind CSS configuration
+│     └─ postcss.config.js                 # PostCSS configuration
+
+├─ services/                               # Backend services (Python, containerized)
+│  └─ agent-api/                           # FastAPI + LangGraph agent service
+│     ├─ app/                              # Main application code
+│     │  ├─ main.py                        # FastAPI app factory, middleware setup, router mounts
+│     │  ├─ core/                          # Core application infrastructure
+│     │  │  ├─ config.py                   # Settings (Pydantic BaseSettings) from environment variables
+│     │  │  ├─ logging.py                  # Structured logging setup (structlog/loguru)
+│     │  │  └─ sentry.py                   # Sentry error tracking initialization
+│     │  ├─ auth/                          # Authentication and authorization
+│     │  │  └─ jwt.py                      # Supabase HS256 JWT verification + FastAPI dependencies
+│     │  ├─ api/                           # API routes and dependencies
+│     │  │  ├─ routes/                     # API endpoint definitions
+│     │  │  │  ├─ health.py                # Health check endpoint (GET /healthz)
+│     │  │  │  ├─ jobs.py                  # Job management (POST /api/agent/jobs, GET /api/agent/jobs/{id})
+│     │  │  │  └─ stream.py                # SSE streaming endpoint (GET /api/agent/stream/{id}) - streams LangGraph events only
+│     │  │  └─ deps.py                     # Shared dependencies (get_user, DB session, rate limiting)
+│     │  ├─ sse/                           # Server-Sent Events infrastructure
+│     │  │  ├─ event_models.py             # SSE payload schemas and data models
+│     │  │  └─ utils.py                    # SSE utilities (keepalive, encoding, etc.)
+│     │  ├─ schemas/                       # Pydantic request/response models
+│     │  │  ├─ jobs.py                     # Job-related schemas
+│     │  │  └─ common.py                   # Shared/common schemas
+│     │  ├─ db/                            # Database access layer (reads Supabase Postgres directly)
+│     │  │  ├─ session.py                  # SQLAlchemy/asyncpg engine and session management
+│     │  │  ├─ repositories/               # Repository pattern for data access
+│     │  │  │  ├─ jobs_repo.py             # Job data access
+│     │  │  │  ├─ users_repo.py            # User data access
+│     │  │  │  └─ subscriptions_repo.py    # Subscription data access
+│     │  │  └─ models/                     # Optional ORM models (NOT schema authority - migrations are)
+│     │  │     ├─ job.py                   # Job model
+│     │  │     └─ user.py                  # User model
+│     │  ├─ services/                      # Business logic orchestration layer
+│     │  │  ├─ job_service.py              # Job creation and tracking across agents
+│     │  │  └─ streaming.py                # Stream assembly (LangGraph events -> SSE)
+│     │  ├─ agents/                        # LangGraph agent implementations
+│     │  │  ├─ main/                       # Main orchestrator agent
+│     │  │  │  ├─ graph.py                 # LangGraph graph definition
+│     │  │  │  ├─ nodes/                   # Agent node implementations
+│     │  │  │  └─ state.py                 # Agent state definitions
+│     │  ├─ features/                      # Feature modules (domain-focused business logic)
+│     │  │  ├─ __init__.py
+│     │  │  └─ ...                         # Feature-specific modules
+│     │  └─ utils/                         # Utility functions
+│     │     └─ time.py                     # Time-related utilities
+│     ├─ evals/                            # Agent evaluation suite
+│     │  ├─ __init__.py
+│     │  ├─ datasets/                      # Evaluation dataset definitions
+│     │  │  ├─ __init__.py
+│     │  │  └─ cli.py                      # CLI commands for managing eval datasets
+│     │  ├─ evaluators/                    # Evaluation logic
+│     │  │  ├─ __init__.py
+│     │  │  └─ ...                         # Evaluator implementations
+│     │  ├─ experiments/                   # Evaluation experiments
+│     │  │  ├─ __init__.py
+│     │  │  ├─ cli.py                      # CLI commands for running experiments
+│     │  │  └─ ...                         # Experiment definitions
+│     │  ├─ cli.py                         # Main evaluation CLI entrypoint
+│     │  └─ types.py                       # Evaluation type definitions
+│     ├─ tests/                            # Test suites
+│     │  ├─ api/                           # API endpoint tests
+│     │  ├─ agents/                        # Agent behavior tests (use evals, not unit tests for LLM nodes)
+│     │  └─ features/                      # Feature module tests
+│     ├─ Dockerfile                        # Container build definition for Cloud Run
+│     ├─ .dockerignore                     # Docker build context exclusions
+│     ├─ pyproject.toml                    # Python project configuration and dependencies
+│     └─ README.md                         # Service-specific documentation
+
+├─ packages/                               # Shared code libraries across apps and services
+│  ├─ types/                               # Generated type definitions (DO NOT EDIT MANUALLY)
+│  │  ├─ supabase.ts                       # Generated Supabase database types (via `supabase gen types`)
+│  │  └─ agent-api.ts                      # Generated OpenAPI client types (via `openapi-typescript`)
+│  ├─ interfaces/                          # Infrastructure abstraction interfaces
+│  │  ├─ storage/                          # Storage abstraction layer
+│  │  │  ├─ src/                           # Storage implementations
+│  │  │  │  ├─ port.ts                     # Minimal StoragePort interface (upload, getUrl, delete only)
+│  │  │  │  ├─ supabase.ts                 # SupabaseStorage implementation (default)
+│  │  │  │  └─ s3.ts                       # Future S3/DigitalOcean Spaces implementation
+│  │  │  ├─ package.json                   # Package dependencies
+│  │  │  └─ tsconfig.json                  # TypeScript configuration
+│  │  ├─ payments/                         # Payment processing abstraction
+│  │  │  ├─ src/                           # Payment implementations
+│  │  │  │  ├─ port.ts                     # Minimal PaymentPort interface (createCheckout, verifyWebhook only)
+│  │  │  │  └─ lemonsqueezy.ts             # LemonSqueezy implementation (default)
+│  │  │  ├─ package.json                   # Package dependencies
+│  │  │  └─ tsconfig.json                  # TypeScript configuration
+│  │  ├─ email/                            # Email service abstraction
+│  │  │  ├─ src/                           # Email implementations
+│  │  │  │  ├─ port.ts                     # Minimal EmailPort interface (send only)
+│  │  │  │  └─ resend.ts                   # Resend implementation (default)
+│  │  │  ├─ package.json                   # Package dependencies
+│  │  │  └─ tsconfig.json                  # TypeScript configuration
+│  │  └─ analytics/                        # Analytics abstraction
+│  │     ├─ src/                           # Analytics implementations
+│  │     │  ├─ port.ts                     # Minimal AnalyticsPort interface (track, identify only)
+│  │     │  └─ ga4.ts                      # GA4 implementation (default)
+│  │     ├─ package.json                   # Package dependencies
+│  │     └─ tsconfig.json                  # TypeScript configuration
+│  └─ ui/                                  # Optional shared UI components
+│     ├─ src/                              # Reusable React components
+│     ├─ package.json                      # UI package dependencies
+│     └─ tsconfig.json                     # TypeScript configuration
+
+├─ supabase/                               # Database schema authority (single source of truth)
+│  ├─ migrations/                          # SQL migration files (ONLY place to define schema)
+│  │  ├─ 0001_init.sql                     # Initial schema: users, subscriptions, usage_counters
+│  │  ├─ 0002_policies.sql                 # RLS (Row Level Security) policies
+│  │  └─ 0003_feature_tables.sql           # Application/agent domain-specific tables
+│  └─ seed/                                # Database seed data
+│     └─ seed.sql                          # Development/staging seed data (idempotent)
+
+├─ e2e/                                    # End-to-end testing
+│  └─ playwright/                          # Playwright test suite
+│     ├─ tests/                            # Test definitions (focus on critical "happy path" flows)
+│     │  ├─ signup.spec.ts                 # User registration flow
+│     │  ├─ pay.spec.ts                    # Payment and subscription flow
+│     │  └─ gated.spec.ts                  # Authenticated feature access
+│     ├─ fixtures/                         # Test data and fixtures
+│     ├─ global-setup.ts                   # Global test setup and configuration
+│     └─ playwright.config.ts              # Playwright configuration (env-driven)
+
+├─ infra/                                  # Infrastructure and deployment configurations
+│  ├─ cloudrun/                            # Google Cloud Run deployment
+│  │  ├─ service.yaml                      # Cloud Run service configuration
+│  │  └─ deploy.sh                         # Build and deploy script for agent container
+│  ├─ vercel/                              # Vercel deployment configuration
+│  │  └─ README.md                         # Project/environment mapping and deployment notes
+│  ├─ docker/                              # Local development orchestration
+│  │  └─ docker-compose.yml                # Optional local service orchestration
+│  └─ github/                              # GitHub Actions CI/CD
+│     └─ workflows/                        # CI/CD workflow definitions
+│        ├─ ci.yml                         # Lint, typecheck, unit tests, e2e testing
+│        ├─ typegen.yml                    # Automated type generation (Supabase + OpenAPI)
+│        ├─ deploy-web.yml                 # Vercel deployment automation
+│        └─ deploy-agent.yml               # Cloud Run deployment automation
+
+├─ docs/                                   # Documentation
+│  ├─ architecture.md                      # System architecture overview and data flow
+│  ├─ legal/                               # Legal document templates
+│  │  ├─ privacy-template.md               # Privacy Policy template
+│  │  ├─ terms-template.md                 # Terms of Service template
+│  │  └─ cookie-template.md                # Cookie Policy template
+│  └─ runbooks/                            # Operational documentation
+│     ├─ onboarding.md                     # Developer onboarding guide
+│     └─ troubleshooting.md                # Common issues and solutions
+
+├─ scripts/                                # Automation and utility scripts
+│  ├─ typegen-supabase.mjs                 # Generates packages/types/supabase.ts from Supabase schema
+│  ├─ typegen-agent.mjs                    # Generates packages/types/agent-api.ts from OpenAPI spec
+│  ├─ db-diff.sh                           # Database schema diff utility
+│  └─ release-notes.sh                     # Release notes generation
+
+├─ package.json                            # Root package.json (npm workspaces: ["apps/*", "packages/*"])
+├─ tsconfig.base.json                      # Base TypeScript configuration for monorepo
+├─ .editorconfig                           # Editor configuration for consistent formatting
+├─ .gitignore                              # Git ignore patterns
+├─ .env.example                            # Environment variable documentation (all required vars)
+├─ README.md                               # Project overview and setup instructions
+└─ vercel.json                             # Optional custom Vercel deployment configuration
+```

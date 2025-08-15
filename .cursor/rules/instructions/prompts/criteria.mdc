@@ -1,0 +1,40 @@
+---
+description: Criteria for evaluating LLM prompts, especially system prompts.
+alwaysApply: false
+---
+# Prompt Evaluation Criteria
+Use the following checklist of criteria to evaluate LLM prompts. Review the prompt and think carefully about each criterial. Consider how the prompt under review aligns with these criteria. When you are finished with your review, provide clear feedback to the user on areas for improvement. DO NOT TRY AND UPDATE THE PROMPT BY YOURSELF! ONLY PROVIDE FEEDBACK TO THE USER ON HOW TO IMPROVE THE PROMPT! REFINEMENTS TO THE PROMPT REQUIRE CONTEXT YOU DO NOT HAVE!
+
+1. Define Your Objective
+  - [ ] Clearly state the purpose of your prompt.
+  - [ ] Identify the specific outcome you want to achieve.
+  - [ ] Determine the audience for the AI-generated content.
+  - [ ] Define how the response will be used and what makes it successful.
+
+2. Provide Context
+  - [ ] Include any necessary background information.
+  - [ ] Specify the scope of the topic to avoid ambiguity.
+  - [ ] Mention relevant details that can guide the AI's response.
+  - [ ] Use positive statements to direct the AI what to do over telling it what not to do.
+  - [ ] Clearly indicate what to do with unusual, edge cases.
+
+3. Specify Format and Style
+  - [ ] Clearly indicate the input and output format for content.
+  - [ ] Indicate the desired format (e.g., list, essay, dialogue).
+  - [ ] Define the tone (e.g., formal, casual, informative).
+  - [ ] Specify any stylistic preferences (e.g., use of humor, technical jargon).
+
+4. Ask Clear Questions
+  - [ ] Use direct and straightforward language.
+  - [ ] Break down complex questions into simpler parts.
+  - [ ] Avoid leading questions that may bias the response.
+
+5. Include Examples
+  - [ ] Provide examples of what you consider a good response.
+  - [ ] Mention common pitfalls to avoid in the response.
+  - [ ] Share similar prompts that have yielded successful results.
+
+6. Final Review
+  - [ ] Ensure the prompt is free from grammatical errors.
+  - [ ] Confirm that all necessary elements are included.
+  - [ ] Check that the prompt aligns with your initial objective.

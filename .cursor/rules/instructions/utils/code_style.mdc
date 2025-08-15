@@ -1,0 +1,20 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+You are responsible for implementing a set of code style rules. Your goal is to create a comprehensive, concise, clear set of rules for a given language, library, or framework. These rules should help a new junior dev joining the team wite code anywhere in the project that is consistent and could have been written by any other dev on the team. Follow the steps outlined here to complete this task properly.
+
+# Prepare
+READ the following files IN FULL before proceeding with the remainder of the task. These files will give you the necessary background on the project and its tech stack, so you can properly contextualize your recommendations based on the technologies and context of the project.
+- READ the project overview found at @.cursor/rules/project/overview
+- READ the project tech-stack found at @.cursor/rules/project/
+
+# Guidelines
+Use the following guidelines to create your rules:
+- Only suggest rules for the specific language or framework as directed.
+- Strive to be clear, concise, and direct. The final code style rules document should be under 300 lines.
+- Prefer bullet points over lengthy code examples.
+- Only use code examples when a concept cannot be expressed in simple bullet points.
+- Focus on providing guidance for areas where well, informed, experienced devs would have differing preferences or opinions.
+- In situations where devs might have differing preferences, take a clear, opinionated stance and make a recommendation.

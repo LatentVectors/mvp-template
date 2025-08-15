@@ -1,0 +1,199 @@
+---
+globs: *.tsx
+alwaysApply: false
+---
+
+# React (.tsx) Style Guide
+
+## Core Rules
+
+1. **Server Components First** - Default to Server Components; only use `"use client"` for: event handlers, browser APIs, React hooks, state management
+2. **TypeScript Strict** - Always use interfaces for props; never use `any` type; use generated types from `packages/types/`
+3. **File Structure** - PascalCase files; Structure: Imports → Types → Component
+
+## Component Patterns
+
+### Props & Interfaces
+```tsx
+// ✅ GOOD
+interface ButtonProps {
+  variant: "primary" | "secondary"
+  size?: "sm" | "md" | "lg"
+  children: ReactNode
+  onClick?: () => void
+}
+
+// ❌ BAD
+function Button(props: { variant: string; children: any }) {}
+```
+
+### Component File Naming
+- **Components**: PascalCase (`UserProfile.tsx`, `Button.tsx`)
+- **Props types**: Match component name with `Props` suffix (`UserProfileProps`)
+
+### Import Patterns
+- Use `import aliases` for component paths: `@/components/Button` instead of `../../../components/Button`
+- Use `import type` for type-only imports in components
+
+### Conditional Rendering
+- Early returns for loading/error states
+- Use `&&` for simple conditionals, ternary for either/or
+- Avoid complex nested conditionals
+
+### Event Handlers
+Use descriptive names: `handleSubmit`, `handleEmailChange` (not `submit`, `change`)
+
+## Hooks & State
+
+### Rules
+- Descriptive state: `isLoading`, `userData`, `error`
+- **ALWAYS use immer for state updates** - Never mutate state directly
+- Single responsibility useEffect
+- Extract reusable logic into custom hooks
+- Always call hooks at top level (never conditionally)
+
+### State Updates with immer
+```tsx
+import { useImmer } from "use-immer"
+
+function useUser(userId: string) {
+  const [state, setState] = useImmer({
+    user: null as User | null,
+    isLoading: true,
+    error: null as string | null,
+  })
+  
+  useEffect(() => {
+    setState(draft => {
+      draft.isLoading = true
+      draft.error = null
+    })
+    
+    fetchUser(userId)
+      .then(user => setState(draft => {
+        draft.user = user
+        draft.isLoading = false
+      }))
+      .catch(err => setState(draft => {
+        draft.error = err.message
+        draft.isLoading = false
+      }))
+  }, [userId])
+  
+  return state
+}
+```
+
+## Forms - Always use Zod + react-hook-form
+```tsx
+const schema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(8),
+})
+
+type FormData = z.infer<typeof schema>
+
+export default function Form() {
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+}
+```
+
+### Form Validation Patterns
+- **Use Zod schemas** for all form validation
+- **Define schemas once**, derive types: `type FormData = z.infer<typeof FormSchema>`
+- **Validate at form submission**: Client-side validation for UX, server-side for security
+
+## Styling - Tailwind CSS
+
+### Class Order
+Layout → Spacing → Typography → Colors → States
+
+```tsx
+// ✅ GOOD
+<div className="flex flex-col p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+
+// ❌ BAD: Random order
+<div className="text-gray-900 hover:shadow-lg bg-white rounded-lg flex p-6">
+```
+
+### Responsive
+Mobile-first: `text-3xl md:text-5xl lg:text-6xl`
+
+### Variants
+Use CVA (Class Variance Authority) for component variants
+
+## Data Fetching
+
+### Server Components
+```tsx
+export default async function UserList() {
+  const { data: users, error } = await supabase.from("users").select("*")
+  if (error) return <div>Error: {error.message}</div>
+  return <div>{/* Render users */}</div>
+}
+```
+
+### Client Components
+Use React Query for client-side fetching with proper error handling
+
+## Performance
+
+- `useMemo` for expensive calculations
+- `useCallback` for stable function references
+- `memo` for components with stable props
+- Avoid inline objects/functions in props
+- **Use dynamic imports** for large components: `const Module = lazy(() => import('./Module'))`
+
+## Next.js API Routes (in .tsx route handlers)
+
+### API Route Patterns
+- **Use explicit method checks**: `if (req.method !== 'POST') return res.status(405)`
+- **Validate inputs with Zod**: Parse request body before processing
+- **Type API responses**: Define response interfaces
+- **Handle errors consistently**: Standard error response format
+
+## Error Handling
+
+- Use Error Boundaries for component errors
+- Proper async error handling with try/catch
+- Always handle loading and error states
+
+## Accessibility
+
+- Semantic HTML: `article`, `header`, `main`, `footer`
+- ARIA labels: `aria-label`, `role`, `aria-modal`
+- Focus management for modals
+- Keyboard navigation support
+
+## Anti-Patterns
+
+### ❌ DON'T
+- Use `any` type
+- Mutate state directly (use immer instead)
+- Use spread operators for state updates (`[...items, newItem]`)
+- Use array index as key for dynamic lists
+- Call hooks conditionally
+- Use inline objects/functions in props
+
+### ✅ DO
+- Use proper TypeScript interfaces
+- Use immer for all state updates: `setState(draft => { draft.items.push(newItem) })`
+- Stable keys: `key={item.id}`
+- Call hooks at top level
+- Memoize when needed
+
+## File Organization
+```
+components/
+├── ui/          # shadcn/ui (auto-generated)
+├── layouts/     # Layout components
+├── features/    # Feature-specific
+├── marketing/   # Marketing pages
+├── blog/        # Blog components
+└── shared/      # Shared utilities
+```
+
+## Summary
+Server Components First • TypeScript Strict • Immer State Updates • Zod Forms • Tailwind Order • Performance Memoization • Accessibility • Error Boundaries
