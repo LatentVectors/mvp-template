@@ -18,21 +18,21 @@ import { cn } from '@/lib/utils'
 const navItems = [
   {
     title: 'Home',
-    href: '/' as const,
+    href: '/',
   },
   {
     title: 'Features',
-    href: '/features' as const,
+    href: '/features',
   },
   {
     title: 'About',
-    href: '/about' as const,
+    href: '/about',
   },
   {
     title: 'Contact',
-    href: '/contact' as const,
+    href: '/contact',
   },
-] as const
+]
 
 export function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false)
@@ -47,7 +47,7 @@ export function Navigation() {
         <NavigationMenuList role="menubar">
           {navItems.map(item => (
             <NavigationMenuItem key={item.href} role="none">
-              <Link href={item.href as any} legacyBehavior passHref>
+              <Link href={item.href as never} legacyBehavior passHref>
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   role="menuitem"
@@ -89,7 +89,7 @@ export function Navigation() {
               {navItems.map(item => (
                 <li key={item.href} role="none">
                   <Link
-                    href={item.href as any}
+                    href={item.href as never}
                     className={cn(
                       'hover:bg-accent hover:text-accent-foreground block rounded-md px-3 py-2 text-sm font-medium transition-colors',
                       'focus:bg-accent focus:text-accent-foreground focus:outline-none'

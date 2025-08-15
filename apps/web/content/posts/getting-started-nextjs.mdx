@@ -1,0 +1,227 @@
+---
+title: "Getting Started with Next.js 15"
+description: "Learn the fundamentals of Next.js 15 and its new features"
+date: "2024-08-10"
+published: true
+tags: ["nextjs", "tutorial", "react", "web-development"]
+author: "Development Team"
+---
+
+# Getting Started with Next.js 15
+
+Next.js 15 introduces several exciting features that make building React applications even more powerful and efficient.
+
+## Key Features of Next.js 15
+
+### App Router (Stable)
+The App Router is now stable and provides:
+- **Server Components** by default
+- **Nested layouts** for better organization
+- **Loading states** and error boundaries
+- **Parallel and intercepting routes**
+
+### React 19 Support
+Next.js 15 fully supports React 19 features:
+- **React Compiler** for automatic optimization
+- **Concurrent features** for better performance
+- **New hooks** like `useFormStatus`
+
+## Setting Up Your First Project
+
+```bash
+# Create a new Next.js project
+npx create-next-app@latest my-app
+
+# Navigate to the project
+cd my-app
+
+# Start the development server
+npm run dev
+```
+
+## File Structure
+
+```
+my-app/
+├── app/
+│   ├── layout.tsx      # Root layout
+│   ├── page.tsx        # Home page
+│   └── globals.css     # Global styles
+├── public/             # Static assets
+├── next.config.js      # Next.js configuration
+└── package.json        # Dependencies
+```
+
+## Your First Component
+
+Create a simple component in `app/components/greeting.tsx`:
+
+```tsx
+interface GreetingProps {
+  name: string
+  isSpecial?: boolean
+}
+
+export default function Greeting({ name, isSpecial = false }: GreetingProps) {
+  return (
+    <div className={`p-4 rounded-lg ${isSpecial ? 'bg-gold-100' : 'bg-gray-100'}`}>
+      <h2 className="text-xl font-bold">
+        {isSpecial ? '🌟' : '👋'} Hello, {name}!
+      </h2>
+      <p className="text-gray-600">
+        Welcome to your Next.js application.
+      </p>
+    </div>
+  )
+}
+```
+
+## Routing in App Directory
+
+The App Router uses file-system based routing:
+
+- `app/page.tsx` → `/`
+- `app/about/page.tsx` → `/about`
+- `app/blog/[slug]/page.tsx` → `/blog/[slug]`
+
+### Dynamic Routes
+
+```tsx
+// app/blog/[slug]/page.tsx
+interface PageProps {
+  params: {
+    slug: string
+  }
+}
+
+export default function BlogPost({ params }: PageProps) {
+  return (
+    <div>
+      <h1>Blog Post: {params.slug}</h1>
+    </div>
+  )
+}
+```
+
+## Data Fetching
+
+### Server Components (Default)
+
+```tsx
+// This runs on the server
+async function getPosts() {
+  const res = await fetch('https://api.example.com/posts')
+  return res.json()
+}
+
+export default async function BlogPage() {
+  const posts = await getPosts()
+  
+  return (
+    <div>
+      {posts.map(post => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.excerpt}</p>
+        </article>
+      ))}
+    </div>
+  )
+}
+```
+
+### Client Components
+
+```tsx
+'use client' // This directive makes it a client component
+
+import { useState, useEffect } from 'react'
+
+export default function InteractiveComponent() {
+  const [count, setCount] = useState(0)
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Clicks: {count}
+    </button>
+  )
+}
+```
+
+## Best Practices
+
+### Performance
+- Use **Server Components** by default
+- Only use **Client Components** when necessary
+- Implement proper **loading states**
+- Optimize **images** with `next/image`
+
+### SEO
+- Add **metadata** to each page
+- Use **structured data**
+- Implement **proper heading hierarchy**
+- Generate **sitemaps** automatically
+
+### Security
+- Validate **user inputs**
+- Use **environment variables** for secrets
+- Implement **CSP headers**
+- Keep **dependencies updated**
+
+## Common Patterns
+
+### Layout Component
+
+```tsx
+// app/layout.tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <header>
+          <nav>Navigation here</nav>
+        </header>
+        <main>{children}</main>
+        <footer>Footer here</footer>
+      </body>
+    </html>
+  )
+}
+```
+
+### Error Handling
+
+```tsx
+// app/error.tsx
+'use client'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error
+  reset: () => void
+}) {
+  return (
+    <div>
+      <h2>Something went wrong!</h2>
+      <button onClick={reset}>Try again</button>
+    </div>
+  )
+}
+```
+
+## Next Steps
+
+Now that you understand the basics:
+
+1. **Build a real project** - Practice with a portfolio or blog
+2. **Learn deployment** - Deploy to Vercel or your preferred platform
+3. **Explore advanced features** - Middleware, API routes, and more
+4. **Join the community** - Connect with other Next.js developers
+
+Happy coding! 🚀

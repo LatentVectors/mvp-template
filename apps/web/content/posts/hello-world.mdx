@@ -1,0 +1,79 @@
+---
+title: "Hello World - Welcome to Our Blog"
+description: "An introduction to our new blog powered by Next.js 15 and Contentlayer2"
+date: "2024-08-15"
+published: true
+tags: ["introduction", "nextjs", "contentlayer"]
+author: "Blog Team"
+---
+
+# Welcome to Our Blog!
+
+This is our first blog post, showcasing the power of **Contentlayer2** with **Next.js 15**. 
+
+## Features We're Demonstrating
+
+- ✅ **GitHub Flavored Markdown** support
+- ✅ **Syntax highlighting** for code blocks
+- ✅ **Automatic heading anchors**
+- ✅ **Type-safe content** with TypeScript
+- ✅ **Reading time calculation**
+- ✅ **Excerpt generation**
+
+## Code Example
+
+Here's a simple React component:
+
+```tsx
+import { FC } from 'react'
+
+interface GreetingProps {
+  name: string
+}
+
+const Greeting: FC<GreetingProps> = ({ name }) => {
+  return (
+    <div className="p-4 bg-blue-100 rounded-lg">
+      <h2>Hello, {name}!</h2>
+      <p>Welcome to our blog.</p>
+    </div>
+  )
+}
+
+export default Greeting
+```
+
+## GitHub Flavored Markdown
+
+### Tables
+
+| Feature | Status | Notes |
+|---------|--------|--------|
+| MDX Processing | ✅ | Via Contentlayer2 |
+| Syntax Highlighting | ✅ | Via rehype-highlight |
+| Type Safety | ✅ | Auto-generated types |
+
+### Task Lists
+
+- [x] Set up Contentlayer2
+- [x] Configure MDX processing
+- [x] Add syntax highlighting
+- [ ] Create blog components
+- [ ] Add SEO optimization
+
+### Strikethrough
+
+This is ~~incorrect~~ correct information.
+
+## What's Next?
+
+In upcoming posts, we'll cover:
+
+1. **Advanced MDX components** - Custom React components in markdown
+2. **SEO optimization** - Meta tags, Open Graph, and sitemaps  
+3. **Performance** - Optimizing build times and bundle sizes
+4. **Deployment** - Going live with Vercel
+
+---
+
+*This post was automatically processed by Contentlayer2 and should have a reading time calculated above.*
