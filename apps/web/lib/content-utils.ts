@@ -2,10 +2,12 @@
  * Content processing utilities for blog posts and other content
  */
 
+import { allPosts } from '.contentlayer/generated'
+
 export interface ContentItem {
   title: string
   date: string
-  tags?: string[]
+  tags?: string[] | undefined
   [key: string]: unknown
 }
 
@@ -218,5 +220,53 @@ export function validatePost(post: unknown): {
   return {
     valid: errors.length === 0,
     errors,
+  }
+}
+
+/**
+ * Get all posts from contentlayer
+ */
+export function getAllPosts() {
+  return allPosts
+}
+
+/**
+ * Get a post by its slug
+ */
+export function getPostBySlug(slug: string) {
+  return allPosts.find(post => post.slug === slug) ?? null
+}
+
+/**
+ * Get the previous and next posts for a given post
+ */
+export function getAdjacentPosts(currentSlug: string) {
+  const posts = getAllPosts()
+  const sortedPosts = sortPostsByDate(posts)
+  const currentIndex = sortedPosts.findIndex(post => post.slug === currentSlug)
+
+  if (currentIndex === -1) {
+    return { previousPost: null, nextPost: null }
+  }
+
+  const previousPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null
+  const nextPost =
+    currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null
+
+  return {
+    previousPost: previousPost
+      ? {
+          slug: previousPost.slug as string,
+          title: previousPost.title as string,
+          url: previousPost.url as string,
+        }
+      : null,
+    nextPost: nextPost
+      ? {
+          slug: nextPost.slug as string,
+          title: nextPost.title as string,
+          url: nextPost.url as string,
+        }
+      : null,
   }
 }

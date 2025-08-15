@@ -11,11 +11,22 @@ import rehypeHighlight from 'rehype-highlight'
 const computedFields: ComputedFields = {
   slug: {
     type: 'string',
-    resolve: (doc: any) => `/${doc._raw.flattenedPath}`,
+    resolve: (doc: any) => {
+      // Remove the 'posts/' directory from the path for cleaner URLs
+      return doc._raw.flattenedPath.replace(/^posts\//, '')
+    },
   },
   slugAsParams: {
     type: 'string',
     resolve: (doc: any) => doc._raw.flattenedPath.split('/').slice(1).join('/'),
+  },
+  url: {
+    type: 'string',
+    resolve: (doc: any) => {
+      // Remove the 'posts/' directory from the path for cleaner URLs
+      const path = doc._raw.flattenedPath.replace(/^posts\//, '')
+      return `/blog/${path}`
+    },
   },
   readingTime: {
     type: 'string',
