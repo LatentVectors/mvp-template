@@ -27,84 +27,86 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer id="footer" className="border-t bg-background">
+    <footer id="footer" className="bg-background border-t">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="font-semibold text-sm mb-4">Product</h3>
+            <h3 className="mb-4 text-sm font-semibold">Product</h3>
             <ul className="space-y-2">
-              {footerLinks.product.map((link) => (
+              {footerLinks.product.map(link => (
                 <li key={link.name}>
-                                     <a
-                     href={link.href}
-                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                   >
-                     {link.name}
-                   </a>
+                  <a
+                    href={link.href}
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {link.name}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="font-semibold text-sm mb-4">Company</h3>
+            <h3 className="mb-4 text-sm font-semibold">Company</h3>
             <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
+              {footerLinks.company.map(link => (
                 <li key={link.name}>
-                                     <a
-                     href={link.href}
-                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                   >
-                     {link.name}
-                   </a>
+                  <a
+                    href={link.href}
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {link.name}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="font-semibold text-sm mb-4">Support</h3>
+            <h3 className="mb-4 text-sm font-semibold">Support</h3>
             <ul className="space-y-2">
-              {footerLinks.support.map((link) => (
+              {footerLinks.support.map(link => (
                 <li key={link.name}>
-                                     <a
-                     href={link.href}
-                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                   >
-                     {link.name}
-                   </a>
+                  <a
+                    href={link.href}
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {link.name}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
-          
+
           <div>
-            <h3 className="font-semibold text-sm mb-4">Legal</h3>
+            <h3 className="mb-4 text-sm font-semibold">Legal</h3>
             <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
+              {footerLinks.legal.map(link => (
                 <li key={link.name}>
-                                     <a
-                     href={link.href}
-                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                   >
-                     {link.name}
-                   </a>
+                  <a
+                    href={link.href}
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {link.name}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
         </div>
-        
-        <div className="border-t pt-8 mt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">M</span>
+
+        <div className="mt-8 border-t pt-8">
+          <div className="flex flex-col items-center justify-between md:flex-row">
+            <div className="mb-4 flex items-center space-x-2 md:mb-0">
+              <div className="bg-primary flex h-6 w-6 items-center justify-center rounded">
+                <span className="text-primary-foreground text-sm font-bold">
+                  M
+                </span>
               </div>
               <span className="font-semibold">MVP Template</span>
             </div>
-            
-            <p className="text-sm text-muted-foreground">
+
+            <p className="text-muted-foreground text-sm">
               © {currentYear} MVP Template. All rights reserved.
             </p>
           </div>

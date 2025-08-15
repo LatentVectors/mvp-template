@@ -1,48 +1,61 @@
 {
-    "name": "mvp-template",
-    "version": "1.0.0",
-    "description": "Modern MVP monorepo for rapidly building and deploying applications.",
-    "private": true,
-    "scripts": {
-        "build": "turbo run build",
-        "dev": "turbo run dev",
-        "lint": "turbo run lint",
-        "lint:fix": "turbo run lint:fix",
-        "format": "turbo run format",
-        "type-check": "turbo run type-check",
-        "test:all": "turbo run test",
-        "clean": "turbo run clean",
-        "clean:all": "rm -rf node_modules && pnpm -r exec rm -rf node_modules && rm -rf .turbo"
-    },
-    "workspaces": [
-        "apps/*",
-        "packages/*",
-        "infra/*",
-        "e2e/*"
+  "name": "mvp-template",
+  "version": "1.0.0",
+  "description": "Modern MVP monorepo for rapidly building and deploying applications.",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "format": "turbo run format",
+    "type-check": "turbo run type-check",
+    "test:all": "turbo run test",
+    "clean": "turbo run clean",
+    "clean:all": "rm -rf node_modules && pnpm -r exec rm -rf node_modules && rm -rf .turbo",
+    "prepare": "husky"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "infra/*",
+    "e2e/*"
+  ],
+  "devDependencies": {
+    "@vitest/ui": "^2.0.0",
+    "eslint": "^9.17.0",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.0",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.0.0"
+  },
+  "packageManager": "npm@10.0.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "keywords": [
+    "monorepo",
+    "turborepo",
+    "next.js",
+    "react",
+    "typescript",
+    "mvp",
+    "template",
+    "starter"
+  ],
+  "author": "LatentVectors",
+  "lint-staged": {
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
     ],
-    "devDependencies": {
-        "turbo": "^2.4.0",
-        "prettier": "^3.4.2",
-        "eslint": "^9.17.0",
-        "typescript": "^5.7.2",
-        "vitest": "^2.0.0",
-        "@vitest/ui": "^2.0.0",
-        "jsdom": "^25.0.0"
-    },
-    "packageManager": "npm@10.0.0",
-    "engines": {
-        "node": ">=22.0.0",
-        "npm": ">=10.0.0"
-    },
-    "keywords": [
-        "monorepo",
-        "turborepo",
-        "next.js",
-        "react",
-        "typescript",
-        "mvp",
-        "template",
-        "starter"
-    ],
-    "author": "LatentVectors"
+    "apps/web/**/*.{js,jsx,ts,tsx}": [
+      "cd apps/web && npm run lint:fix",
+      "prettier --write"
+    ]
+  }
 }

@@ -5,11 +5,11 @@ import Link from 'next/link'
 import { MenuIcon, XIcon } from 'lucide-react'
 import {
   NavigationMenu,
-  NavigationMenuContent,
+  // NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
+  // NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { Button } from '@/components/ui/button'
@@ -18,21 +18,21 @@ import { cn } from '@/lib/utils'
 const navItems = [
   {
     title: 'Home',
-    href: '/',
+    href: '/' as const,
   },
   {
     title: 'Features',
-    href: '/features',
+    href: '/features' as const,
   },
   {
     title: 'About',
-    href: '/about',
+    href: '/about' as const,
   },
   {
     title: 'Contact',
-    href: '/contact',
+    href: '/contact' as const,
   },
-]
+] as const
 
 export function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false)
@@ -40,12 +40,15 @@ export function Navigation() {
   return (
     <>
       {/* Desktop Navigation */}
-      <NavigationMenu className="hidden md:flex lg:flex" aria-label="Main navigation">
+      <NavigationMenu
+        className="hidden md:flex lg:flex"
+        aria-label="Main navigation"
+      >
         <NavigationMenuList role="menubar">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <NavigationMenuItem key={item.href} role="none">
-              <Link href={item.href} legacyBehavior passHref>
-                <NavigationMenuLink 
+              <Link href={item.href as any} legacyBehavior passHref>
+                <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   role="menuitem"
                 >
@@ -78,17 +81,17 @@ export function Navigation() {
       {isOpen && (
         <nav
           id="mobile-menu"
-          className="absolute top-full left-0 right-0 z-50 bg-background border-b shadow-lg md:hidden"
+          className="bg-background absolute top-full right-0 left-0 z-50 border-b shadow-lg md:hidden"
           aria-label="Mobile navigation"
         >
           <div className="container mx-auto px-4 py-4">
             <ul className="space-y-2" role="menu">
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <li key={item.href} role="none">
                   <Link
-                    href={item.href}
+                    href={item.href as any}
                     className={cn(
-                      'block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors',
+                      'hover:bg-accent hover:text-accent-foreground block rounded-md px-3 py-2 text-sm font-medium transition-colors',
                       'focus:bg-accent focus:text-accent-foreground focus:outline-none'
                     )}
                     onClick={() => setIsOpen(false)}

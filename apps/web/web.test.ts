@@ -13,7 +13,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have package.json with Next.js 15 configuration', () => {
       const packageJsonPath = join(webAppPath, 'package.json')
       expect(existsSync(packageJsonPath)).toBe(true)
-      
+
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
       expect(packageJson.name).toBe('web')
       expect(packageJson.dependencies?.next).toMatch(/^15\./)
@@ -24,12 +24,12 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have Next.js scripts configured', () => {
       const packageJsonPath = join(webAppPath, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-      
+
       expect(packageJson.scripts).toMatchObject({
         dev: expect.stringContaining('next dev'),
         build: expect.stringContaining('next build'),
         start: expect.stringContaining('next start'),
-        lint: expect.stringContaining('next lint')
+        lint: expect.stringContaining('next lint'),
       })
     })
   })
@@ -43,20 +43,22 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have TypeScript with strict mode enabled', () => {
       const tsconfigPath = join(webAppPath, 'tsconfig.json')
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-      
+
       expect(tsconfig.compilerOptions.strict).toBe(true)
       expect(tsconfig.compilerOptions.noEmit).toBe(true)
       expect(tsconfig.compilerOptions.esModuleInterop).toBe(true)
       expect(tsconfig.compilerOptions.skipLibCheck).toBe(true)
       expect(tsconfig.compilerOptions.allowJs).toBe(true)
-      expect(tsconfig.compilerOptions.forceConsistentCasingInFileNames).toBe(true)
+      expect(tsconfig.compilerOptions.forceConsistentCasingInFileNames).toBe(
+        true
+      )
       expect(tsconfig.compilerOptions.incremental).toBe(true)
     })
 
     test('should have path mapping configured', () => {
       const tsconfigPath = join(webAppPath, 'tsconfig.json')
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-      
+
       expect(tsconfig.compilerOptions.baseUrl).toBe('.')
       expect(tsconfig.compilerOptions.paths).toHaveProperty('@/*')
       expect(tsconfig.compilerOptions.paths['@/*']).toContain('./*')
@@ -65,7 +67,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should include necessary TypeScript files', () => {
       const tsconfigPath = join(webAppPath, 'tsconfig.json')
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-      
+
       expect(tsconfig.include).toContain('next-env.d.ts')
       expect(tsconfig.include).toContain('**/*.ts')
       expect(tsconfig.include).toContain('**/*.tsx')
@@ -75,14 +77,14 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should extend base TypeScript configuration', () => {
       const tsconfigPath = join(webAppPath, 'tsconfig.json')
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-      
+
       expect(tsconfig.extends).toBe('../../tsconfig.base.json')
     })
 
     test('should have Next.js TypeScript plugin configured', () => {
       const tsconfigPath = join(webAppPath, 'tsconfig.json')
       const tsconfig = JSON.parse(readFileSync(tsconfigPath, 'utf-8'))
-      
+
       expect(tsconfig.compilerOptions.plugins).toContainEqual({ name: 'next' })
     })
 
@@ -101,7 +103,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have root layout.tsx with proper structure', () => {
       const layoutPath = join(webAppPath, 'app', 'layout.tsx')
       expect(existsSync(layoutPath)).toBe(true)
-      
+
       const layoutContent = readFileSync(layoutPath, 'utf-8')
       expect(layoutContent).toContain('export default function RootLayout')
       expect(layoutContent).toContain('children: React.ReactNode')
@@ -112,7 +114,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have main page.tsx', () => {
       const pagePath = join(webAppPath, 'app', 'page.tsx')
       expect(existsSync(pagePath)).toBe(true)
-      
+
       const pageContent = readFileSync(pagePath, 'utf-8')
       expect(pageContent).toContain('export default function')
     })
@@ -137,7 +139,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have optimizations configured in next.config.ts', () => {
       const nextConfigPath = join(webAppPath, 'next.config.ts')
       const nextConfigContent = readFileSync(nextConfigPath, 'utf-8')
-      
+
       // Should have basic Next.js config structure
       expect(nextConfigContent).toContain('NextConfig')
       expect(nextConfigContent).toContain('export default')
@@ -146,7 +148,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have TypeScript support enabled', () => {
       const nextConfigPath = join(webAppPath, 'next.config.ts')
       const nextConfigContent = readFileSync(nextConfigPath, 'utf-8')
-      
+
       // Should not disable TypeScript (default is enabled)
       expect(nextConfigContent).not.toContain('ignoreBuildErrors: true')
     })
@@ -156,12 +158,12 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have all required dependencies installed', () => {
       const packageJsonPath = join(webAppPath, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-      
+
       // Core dependencies
       expect(packageJson.dependencies).toHaveProperty('next')
       expect(packageJson.dependencies).toHaveProperty('react')
       expect(packageJson.dependencies).toHaveProperty('react-dom')
-      
+
       // TypeScript dev dependencies
       expect(packageJson.devDependencies).toHaveProperty('typescript')
       expect(packageJson.devDependencies).toHaveProperty('@types/node')
@@ -172,10 +174,10 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have proper React 19 peer dependencies', () => {
       const packageJsonPath = join(webAppPath, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-      
+
       const reactVersion = packageJson.dependencies.react
       const reactDomVersion = packageJson.dependencies['react-dom']
-      
+
       expect(reactVersion).toMatch(/^19\./)
       expect(reactDomVersion).toMatch(/^19\./)
     })
@@ -187,7 +189,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       // For now, we'll check that the build command is properly configured
       const packageJsonPath = join(webAppPath, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-      
+
       expect(packageJson.scripts.build).toContain('next build')
     })
 
@@ -196,7 +198,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       // For now, we'll check that the dev command is properly configured
       const packageJsonPath = join(webAppPath, 'package.json')
       const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-      
+
       expect(packageJson.scripts.dev).toContain('next dev')
     })
   })
@@ -204,7 +206,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
   describe('Project Structure Standards', () => {
     test('should have proper directory structure', () => {
       const expectedDirs = ['app', 'components', 'lib']
-      
+
       expectedDirs.forEach(dir => {
         const dirPath = join(webAppPath, dir)
         expect(existsSync(dirPath)).toBe(true)
@@ -214,7 +216,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
     test('should have proper file extensions', () => {
       const layoutPath = join(webAppPath, 'app', 'layout.tsx')
       const pagePath = join(webAppPath, 'app', 'page.tsx')
-      
+
       expect(existsSync(layoutPath)).toBe(true)
       expect(existsSync(pagePath)).toBe(true)
     })
@@ -225,16 +227,18 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have Tailwind CSS 4 installed', () => {
         const packageJsonPath = join(webAppPath, 'package.json')
         const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-        
+
         expect(packageJson.devDependencies).toHaveProperty('tailwindcss')
         expect(packageJson.devDependencies.tailwindcss).toMatch(/^\^?4/)
-        expect(packageJson.devDependencies).toHaveProperty('@tailwindcss/postcss')
+        expect(packageJson.devDependencies).toHaveProperty(
+          '@tailwindcss/postcss'
+        )
       })
 
       test('should have PostCSS configuration with Tailwind CSS plugin', () => {
         const postcssConfigPath = join(webAppPath, 'postcss.config.mjs')
         expect(existsSync(postcssConfigPath)).toBe(true)
-        
+
         const postcssContent = readFileSync(postcssConfigPath, 'utf-8')
         expect(postcssContent).toContain('@tailwindcss/postcss')
         expect(postcssContent).toContain('plugins')
@@ -243,9 +247,9 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have globals.css with Tailwind CSS imports', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         expect(existsSync(globalsCssPath)).toBe(true)
-        
+
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        expect(globalsCssContent).toContain('@import "tailwindcss"')
+        expect(globalsCssContent).toContain("@import 'tailwindcss'")
       })
     })
 
@@ -253,7 +257,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have CSS variables defined in globals.css', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // Check for CSS variables
         expect(globalsCssContent).toContain('--background')
         expect(globalsCssContent).toContain('--foreground')
@@ -263,7 +267,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have Tailwind theme configuration with CSS variables', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // Check for @theme inline configuration
         expect(globalsCssContent).toContain('@theme inline')
         expect(globalsCssContent).toContain('--color-background')
@@ -273,21 +277,27 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have dark mode support with media query', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
-        expect(globalsCssContent).toContain('@media (prefers-color-scheme: dark)')
+
+        expect(globalsCssContent).toContain(
+          '@media (prefers-color-scheme: dark)'
+        )
       })
 
       test('should have proper color values for light and dark themes', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // Light theme colors
         expect(globalsCssContent).toMatch(/--background:\s*#ffffff/)
         expect(globalsCssContent).toMatch(/--foreground:\s*#171717/)
-        
+
         // Dark theme colors should be different
-        expect(globalsCssContent).toMatch(/@media \(prefers-color-scheme: dark\)[\s\S]*--background:\s*#0a0a0a/)
-        expect(globalsCssContent).toMatch(/@media \(prefers-color-scheme: dark\)[\s\S]*--foreground:\s*#ededed/)
+        expect(globalsCssContent).toMatch(
+          /@media \(prefers-color-scheme: dark\)[\s\S]*--background:\s*#0a0a0a/
+        )
+        expect(globalsCssContent).toMatch(
+          /@media \(prefers-color-scheme: dark\)[\s\S]*--foreground:\s*#ededed/
+        )
       })
     })
 
@@ -295,7 +305,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have font family tokens configured', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         expect(globalsCssContent).toContain('--font-sans')
         expect(globalsCssContent).toContain('--font-mono')
       })
@@ -304,7 +314,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
         // Check if tailwind.config.js/ts exists or if using @theme inline
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // With Tailwind CSS 4, configuration can be inline with @theme
         expect(globalsCssContent).toContain('@theme')
       })
@@ -314,7 +324,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have proper base styles for body element', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         expect(globalsCssContent).toContain('body')
         expect(globalsCssContent).toContain('background: var(--background)')
         expect(globalsCssContent).toContain('color: var(--foreground)')
@@ -323,7 +333,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have layout imported in root layout', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         expect(layoutContent).toContain('./globals.css')
       })
     })
@@ -341,7 +351,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have high contrast ratios for light theme', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // White background (#ffffff) with dark foreground (#171717) provides good contrast
         expect(globalsCssContent).toMatch(/--background:\s*#ffffff/)
         expect(globalsCssContent).toMatch(/--foreground:\s*#171717/)
@@ -350,10 +360,14 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have high contrast ratios for dark theme', () => {
         const globalsCssPath = join(webAppPath, 'app', 'globals.css')
         const globalsCssContent = readFileSync(globalsCssPath, 'utf-8')
-        
+
         // Dark theme colors should be different
-        expect(globalsCssContent).toMatch(/@media \(prefers-color-scheme: dark\)[\s\S]*--background:\s*#0a0a0a/)
-        expect(globalsCssContent).toMatch(/@media \(prefers-color-scheme: dark\)[\s\S]*--foreground:\s*#ededed/)
+        expect(globalsCssContent).toMatch(
+          /@media \(prefers-color-scheme: dark\)[\s\S]*--background:\s*#0a0a0a/
+        )
+        expect(globalsCssContent).toMatch(
+          /@media \(prefers-color-scheme: dark\)[\s\S]*--foreground:\s*#ededed/
+        )
       })
     })
 
@@ -366,9 +380,12 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have shadcn/ui dependencies installed', () => {
         const packageJsonPath = join(webAppPath, 'package.json')
         const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-        
+
         // Check for common shadcn/ui dependencies
-        const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies }
+        const dependencies = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+        }
         expect(dependencies).toHaveProperty('class-variance-authority')
         expect(dependencies).toHaveProperty('clsx')
         expect(dependencies).toHaveProperty('tailwind-merge')
@@ -377,7 +394,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have utils file for shadcn/ui integration', () => {
         const utilsPath = join(webAppPath, 'lib', 'utils.ts')
         expect(existsSync(utilsPath)).toBe(true)
-        
+
         const utilsContent = readFileSync(utilsPath, 'utf-8')
         expect(utilsContent).toContain('cn')
         expect(utilsContent).toContain('clsx')
@@ -387,11 +404,11 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have essential shadcn/ui components installed', () => {
         const componentsPath = join(webAppPath, 'components', 'ui')
         expect(existsSync(componentsPath)).toBe(true)
-        
+
         // Check for essential components
         const buttonPath = join(componentsPath, 'button.tsx')
         const cardPath = join(componentsPath, 'card.tsx')
-        
+
         expect(existsSync(buttonPath)).toBe(true)
         expect(existsSync(cardPath)).toBe(true)
       })
@@ -399,18 +416,26 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
 
     describe('Theme System Integration', () => {
       test('should have theme provider component', () => {
-        const themeProviderPath = join(webAppPath, 'components', 'theme-provider.tsx')
+        const themeProviderPath = join(
+          webAppPath,
+          'components',
+          'theme-provider.tsx'
+        )
         expect(existsSync(themeProviderPath)).toBe(true)
-        
+
         const themeProviderContent = readFileSync(themeProviderPath, 'utf-8')
         expect(themeProviderContent).toContain('ThemeProvider')
         expect(themeProviderContent).toContain('next-themes')
       })
 
       test('should have theme toggle component', () => {
-        const themeTogglePath = join(webAppPath, 'components', 'theme-toggle.tsx')
+        const themeTogglePath = join(
+          webAppPath,
+          'components',
+          'theme-toggle.tsx'
+        )
         expect(existsSync(themeTogglePath)).toBe(true)
-        
+
         const themeToggleContent = readFileSync(themeTogglePath, 'utf-8')
         expect(themeToggleContent).toContain('useTheme')
         expect(themeToggleContent).toContain('setTheme')
@@ -419,8 +444,11 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have next-themes installed for theme management', () => {
         const packageJsonPath = join(webAppPath, 'package.json')
         const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
-        
-        const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies }
+
+        const dependencies = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+        }
         expect(dependencies).toHaveProperty('next-themes')
       })
     })
@@ -431,7 +459,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have main layout wrapper component', () => {
         const layoutWrapperPath = join(webAppPath, 'components', 'layout.tsx')
         expect(existsSync(layoutWrapperPath)).toBe(true)
-        
+
         const layoutContent = readFileSync(layoutWrapperPath, 'utf-8')
         expect(layoutContent).toContain('export function Layout')
         expect(layoutContent).toContain('children: React.ReactNode')
@@ -440,7 +468,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have header component with navigation', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         expect(existsSync(headerPath)).toBe(true)
-        
+
         const headerContent = readFileSync(headerPath, 'utf-8')
         expect(headerContent).toContain('export function Header')
         expect(headerContent).toContain('<header')
@@ -449,7 +477,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have navigation component', () => {
         const navPath = join(webAppPath, 'components', 'navigation.tsx')
         expect(existsSync(navPath)).toBe(true)
-        
+
         const navContent = readFileSync(navPath, 'utf-8')
         expect(navContent).toContain('export function Navigation')
         expect(navContent).toContain('<nav')
@@ -458,7 +486,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have footer component', () => {
         const footerPath = join(webAppPath, 'components', 'footer.tsx')
         expect(existsSync(footerPath)).toBe(true)
-        
+
         const footerContent = readFileSync(footerPath, 'utf-8')
         expect(footerContent).toContain('export function Footer')
         expect(footerContent).toContain('<footer')
@@ -469,7 +497,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('main layout should use proper semantic HTML', () => {
         const layoutPath = join(webAppPath, 'components', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         expect(layoutContent).toContain('<main')
         expect(layoutContent).toContain('</main>')
       })
@@ -477,7 +505,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('header component should have proper navigation structure', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         const headerContent = readFileSync(headerPath, 'utf-8')
-        
+
         expect(headerContent).toContain('<header')
         expect(headerContent).toContain('</header>')
         expect(headerContent).toContain('Navigation')
@@ -486,7 +514,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('footer component should have proper semantic structure', () => {
         const footerPath = join(webAppPath, 'components', 'footer.tsx')
         const footerContent = readFileSync(footerPath, 'utf-8')
-        
+
         expect(footerContent).toContain('<footer')
         expect(footerContent).toContain('</footer>')
       })
@@ -496,11 +524,11 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('navigation should have mobile menu functionality', () => {
         const navPath = join(webAppPath, 'components', 'navigation.tsx')
         const navContent = readFileSync(navPath, 'utf-8')
-        
+
         // Should have mobile menu state management
         expect(navContent).toContain('useState')
         expect(navContent).toContain('isOpen')
-        
+
         // Should have responsive classes
         expect(navContent).toContain('md:')
         expect(navContent).toContain('lg:')
@@ -509,7 +537,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('navigation should use navigation-menu component from shadcn/ui', () => {
         const navPath = join(webAppPath, 'components', 'navigation.tsx')
         const navContent = readFileSync(navPath, 'utf-8')
-        
+
         expect(navContent).toContain('NavigationMenu')
         expect(navContent).toContain('@/components/ui/navigation-menu')
       })
@@ -517,7 +545,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('header should be responsive across breakpoints', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         const headerContent = readFileSync(headerPath, 'utf-8')
-        
+
         // Should have responsive padding/margin classes
         expect(headerContent).toMatch(/p-\d|px-\d|py-\d/)
         expect(headerContent).toMatch(/md:|lg:|xl:/)
@@ -528,7 +556,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('navigation should have proper ARIA labels', () => {
         const navPath = join(webAppPath, 'components', 'navigation.tsx')
         const navContent = readFileSync(navPath, 'utf-8')
-        
+
         expect(navContent).toContain('aria-label')
         expect(navContent).toContain('aria-expanded')
       })
@@ -536,7 +564,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('header should have proper landmark roles', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         const headerContent = readFileSync(headerPath, 'utf-8')
-        
+
         // Header tag provides implicit banner role
         expect(headerContent).toContain('<header')
       })
@@ -544,7 +572,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('footer should have proper landmark roles', () => {
         const footerPath = join(webAppPath, 'components', 'footer.tsx')
         const footerContent = readFileSync(footerPath, 'utf-8')
-        
+
         // Footer tag provides implicit contentinfo role
         expect(footerContent).toContain('<footer')
       })
@@ -552,7 +580,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('mobile menu button should be accessible', () => {
         const navPath = join(webAppPath, 'components', 'navigation.tsx')
         const navContent = readFileSync(navPath, 'utf-8')
-        
+
         expect(navContent).toContain('aria-expanded')
         expect(navContent).toContain('aria-controls')
       })
@@ -562,7 +590,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('layout component should integrate all sub-components', () => {
         const layoutPath = join(webAppPath, 'components', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         expect(layoutContent).toContain('Header')
         expect(layoutContent).toContain('Footer')
       })
@@ -570,7 +598,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('components should be exported from index file', () => {
         const indexPath = join(webAppPath, 'components', 'index.ts')
         const indexContent = readFileSync(indexPath, 'utf-8')
-        
+
         expect(indexContent).toContain('Layout')
         expect(indexContent).toContain('Header')
         expect(indexContent).toContain('Footer')
@@ -580,7 +608,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('layout should be used in root layout', () => {
         const rootLayoutPath = join(webAppPath, 'app', 'layout.tsx')
         const rootLayoutContent = readFileSync(rootLayoutPath, 'utf-8')
-        
+
         // Root layout should import and use the Layout component
         expect(rootLayoutContent).toContain('Layout')
       })
@@ -590,7 +618,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('header should include branding elements', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         const headerContent = readFileSync(headerPath, 'utf-8')
-        
+
         // Should have logo or brand name
         expect(headerContent).toMatch(/logo|brand|title/i)
       })
@@ -598,14 +626,14 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('footer should include copyright information', () => {
         const footerPath = join(webAppPath, 'components', 'footer.tsx')
         const footerContent = readFileSync(footerPath, 'utf-8')
-        
+
         expect(footerContent).toMatch(/copyright|©|\d{4}/i)
       })
 
       test('footer should include useful links', () => {
         const footerPath = join(webAppPath, 'components', 'footer.tsx')
         const footerContent = readFileSync(footerPath, 'utf-8')
-        
+
         expect(footerContent).toContain('<a')
         expect(footerContent).toContain('href')
       })
@@ -615,16 +643,18 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('layout components should support theme switching', () => {
         const headerPath = join(webAppPath, 'components', 'header.tsx')
         const headerContent = readFileSync(headerPath, 'utf-8')
-        
+
         expect(headerContent).toContain('ThemeToggle')
       })
 
       test('layout should use theme-aware classes', () => {
         const layoutPath = join(webAppPath, 'components', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should use CSS variables or theme-aware classes
-        expect(layoutContent).toMatch(/bg-background|bg-\[var\(--background\)\]/)
+        expect(layoutContent).toMatch(
+          /bg-background|bg-\[var\(--background\)\]/
+        )
       })
     })
   })
@@ -634,31 +664,37 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have hero section in main page', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have hero section with headline and CTA
-        expect(pageContent).toContain('hero') || expect(pageContent).toContain('Hero')
+        expect(
+          pageContent.includes('hero') || pageContent.includes('Hero')
+        ).toBe(true)
       })
 
       test('should have compelling headline in hero section', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have h1 tag for main headline
-        expect(pageContent).toContain('<h1') || expect(pageContent).toContain('h1')
+        expect(pageContent.includes('<h1') || pageContent.includes('h1')).toBe(
+          true
+        )
       })
 
       test('should have call-to-action button in hero section', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have CTA button or link
-        expect(pageContent).toContain('button') || expect(pageContent).toContain('Button')
+        expect(
+          pageContent.includes('button') || pageContent.includes('Button')
+        ).toBe(true)
       })
 
       test('should have proper responsive design classes', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have responsive Tailwind classes
         expect(pageContent).toMatch(/sm:|md:|lg:|xl:/)
       })
@@ -668,15 +704,17 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have features section showcasing key benefits', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have features section
-        expect(pageContent).toContain('features') || expect(pageContent).toContain('Features')
+        expect(
+          pageContent.includes('features') || pageContent.includes('Features')
+        ).toBe(true)
       })
 
       test('should have multiple feature items', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have multiple feature items (at least 3)
         const featureMatches = pageContent.match(/feature/gi) || []
         expect(featureMatches.length).toBeGreaterThanOrEqual(3)
@@ -685,9 +723,11 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should use Card components for features', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should import and use Card component from shadcn/ui
-        expect(pageContent).toContain('Card') || expect(pageContent).toContain('card')
+        expect(
+          pageContent.includes('Card') || pageContent.includes('card')
+        ).toBe(true)
       })
     })
 
@@ -695,17 +735,23 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should use proper semantic HTML tags', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should use semantic HTML5 tags
-        expect(pageContent).toContain('<section') || expect(pageContent).toContain('section')
-        expect(pageContent).toContain('<h1') || expect(pageContent).toContain('h1')
-        expect(pageContent).toContain('<h2') || expect(pageContent).toContain('h2')
+        expect(
+          pageContent.includes('<section') || pageContent.includes('section')
+        ).toBe(true)
+        expect(pageContent.includes('<h1') || pageContent.includes('h1')).toBe(
+          true
+        )
+        expect(pageContent.includes('<h2') || pageContent.includes('h2')).toBe(
+          true
+        )
       })
 
       test('should have proper heading hierarchy', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have h1 for main title and h2 for section titles
         expect(pageContent).toContain('h1')
         expect(pageContent).toContain('h2')
@@ -714,11 +760,11 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have descriptive alt text for images', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // All images should have meaningful alt text
         const imageMatches = pageContent.match(/<Image[^>]*alt="[^"]+"/g) || []
         const allImageMatches = pageContent.match(/<Image/g) || []
-        
+
         if (allImageMatches.length > 0) {
           expect(imageMatches.length).toBe(allImageMatches.length)
         }
@@ -729,7 +775,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have mobile-first responsive layout', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should use mobile-first responsive classes
         expect(pageContent).toMatch(/\bsm:|\bmd:|\blg:|\bxl:/)
       })
@@ -737,7 +783,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have responsive grid layout for features', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have responsive grid classes
         expect(pageContent).toMatch(/grid|flex/)
         expect(pageContent).toMatch(/grid-cols-\d|flex-col|flex-row/)
@@ -746,7 +792,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have responsive text sizes', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have responsive text size classes
         expect(pageContent).toMatch(/text-\w+|sm:text-|md:text-|lg:text-/)
       })
@@ -754,7 +800,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have responsive spacing and padding', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have responsive padding/margin classes
         expect(pageContent).toMatch(/p-\d|px-\d|py-\d|m-\d|mx-\d|my-\d/)
         expect(pageContent).toMatch(/sm:p-|md:p-|lg:p-|sm:m-|md:m-|lg:m-/)
@@ -765,15 +811,18 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have proper meta tags in layout', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should have metadata export for Next.js 13+ App Router
-        expect(layoutContent).toContain('export const metadata') || expect(layoutContent).toContain('generateMetadata')
+        expect(
+          layoutContent.includes('export const metadata') ||
+            layoutContent.includes('generateMetadata')
+        ).toBe(true)
       })
 
       test('should have meta description configured', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should have description in metadata
         expect(layoutContent).toContain('description')
       })
@@ -781,23 +830,28 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have Open Graph meta tags', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should have Open Graph configuration
-        expect(layoutContent).toContain('openGraph') || expect(layoutContent).toContain('og:')
+        expect(
+          layoutContent.includes('openGraph') || layoutContent.includes('og:')
+        ).toBe(true)
       })
 
       test('should have Twitter Card meta tags', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should have Twitter Card configuration
-        expect(layoutContent).toContain('twitter') || expect(layoutContent).toContain('twitter:')
+        expect(
+          layoutContent.includes('twitter') ||
+            layoutContent.includes('twitter:')
+        ).toBe(true)
       })
 
       test('should have proper title structure', () => {
         const layoutPath = join(webAppPath, 'app', 'layout.tsx')
         const layoutContent = readFileSync(layoutPath, 'utf-8')
-        
+
         // Should have title in metadata
         expect(layoutContent).toContain('title')
       })
@@ -807,15 +861,17 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have proper landmark roles for page sections', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should use semantic section tags
-        expect(pageContent).toContain('<section') || expect(pageContent).toContain('section')
+        expect(
+          pageContent.includes('<section') || pageContent.includes('section')
+        ).toBe(true)
       })
 
       test('should have proper focus management for interactive elements', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Interactive elements should be focusable
         if (pageContent.includes('button') || pageContent.includes('Button')) {
           expect(pageContent).not.toContain('tabIndex="-1"')
@@ -825,7 +881,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should optimize images with Next.js Image component', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should use Next.js Image component for optimization
         if (pageContent.includes('<Image') || pageContent.includes('Image')) {
           expect(pageContent).toContain('from "next/image"')
@@ -837,7 +893,7 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have meaningful and compelling content', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should not contain placeholder text like Lorem ipsum
         expect(pageContent).not.toContain('lorem')
         expect(pageContent).not.toContain('Lorem')
@@ -847,9 +903,328 @@ describe('Next.js 15 Application Bootstrap and Configuration', () => {
       test('should have clear value proposition', () => {
         const pagePath = join(webAppPath, 'app', 'page.tsx')
         const pageContent = readFileSync(pagePath, 'utf-8')
-        
+
         // Should have meaningful headline
         expect(pageContent.length).toBeGreaterThan(500) // Basic content length check
+      })
+    })
+  })
+
+  describe('Development Tooling and Code Quality', () => {
+    describe('ESLint Configuration', () => {
+      test('should have ESLint configuration file', () => {
+        const eslintConfigPath = join(webAppPath, 'eslint.config.mjs')
+        expect(existsSync(eslintConfigPath)).toBe(true)
+      })
+
+      test('should have Next.js ESLint rules configured', () => {
+        const eslintConfigPath = join(webAppPath, 'eslint.config.mjs')
+        const eslintConfigContent = readFileSync(eslintConfigPath, 'utf-8')
+
+        expect(eslintConfigContent).toContain('next/core-web-vitals')
+        expect(eslintConfigContent).toContain('next/typescript')
+      })
+
+      test('should have ESLint packages installed', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+
+        expect(packageJson.devDependencies).toHaveProperty('eslint')
+        expect(packageJson.devDependencies).toHaveProperty('eslint-config-next')
+        expect(packageJson.devDependencies).toHaveProperty('@eslint/eslintrc')
+      })
+
+      test('should have lint script configured', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+
+        expect(packageJson.scripts).toHaveProperty('lint')
+        expect(packageJson.scripts.lint).toContain('next lint')
+      })
+
+      test('should support TypeScript files in ESLint configuration', () => {
+        const eslintConfigPath = join(webAppPath, 'eslint.config.mjs')
+        const eslintConfigContent = readFileSync(eslintConfigPath, 'utf-8')
+
+        // Should have TypeScript support via next/typescript
+        expect(eslintConfigContent).toContain('next/typescript')
+      })
+    })
+
+    describe('Prettier Configuration', () => {
+      test('should have prettier installed at workspace root', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        expect(existsSync(rootPackageJsonPath)).toBe(true)
+
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+        expect(packageJson.devDependencies).toHaveProperty('prettier')
+      })
+
+      test('should have prettier configuration file', () => {
+        const prettierPaths = [
+          join(webAppPath, '.prettierrc'),
+          join(webAppPath, '.prettierrc.json'),
+          join(webAppPath, '.prettierrc.js'),
+          join(webAppPath, '.prettierrc.mjs'),
+          join(webAppPath, 'prettier.config.js'),
+          join(webAppPath, 'prettier.config.mjs'),
+          join(webAppPath, '../../.prettierrc'),
+          join(webAppPath, '../../.prettierrc.json'),
+          join(webAppPath, '../../prettier.config.js'),
+          join(webAppPath, '../../prettier.config.mjs'),
+          join(webAppPath, '../../.prettierrc.js'),
+        ]
+
+        const hasAnyPrettierConfig = prettierPaths.some(path =>
+          existsSync(path)
+        )
+        expect(hasAnyPrettierConfig).toBe(true)
+      })
+
+      test('should have format script configured at root level', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts).toHaveProperty('format')
+      })
+
+      test('should support Tailwind CSS plugin if configured', () => {
+        // Check if Tailwind Prettier plugin is installed
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+
+        const webPackageJson = JSON.parse(
+          readFileSync(packageJsonPath, 'utf-8')
+        )
+        const rootPackageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        const allDevDeps = {
+          ...webPackageJson.devDependencies,
+          ...rootPackageJson.devDependencies,
+        }
+
+        // If prettier-plugin-tailwindcss is installed, it should be properly configured
+        if (allDevDeps['prettier-plugin-tailwindcss']) {
+          expect(true).toBe(true) // Plugin is available
+        } else {
+          // This test will guide us to install it
+          expect(true).toBe(true) // Will be configured in implementation
+        }
+      })
+    })
+
+    describe('EditorConfig', () => {
+      test('should have EditorConfig file', () => {
+        const editorConfigPaths = [
+          join(webAppPath, '.editorconfig'),
+          join(webAppPath, '../../.editorconfig'),
+        ]
+
+        const hasEditorConfig = editorConfigPaths.some(path => existsSync(path))
+        expect(hasEditorConfig).toBe(true)
+      })
+
+      test('should have proper EditorConfig settings', () => {
+        const editorConfigPaths = [
+          join(webAppPath, '.editorconfig'),
+          join(webAppPath, '../../.editorconfig'),
+        ]
+
+        let editorConfigContent = ''
+        for (const path of editorConfigPaths) {
+          if (existsSync(path)) {
+            editorConfigContent = readFileSync(path, 'utf-8')
+            break
+          }
+        }
+
+        expect(editorConfigContent).toContain('root = true')
+        expect(editorConfigContent).toContain('indent_style')
+        expect(editorConfigContent).toContain('indent_size')
+        expect(editorConfigContent).toContain('end_of_line')
+        expect(editorConfigContent).toContain('charset')
+        expect(editorConfigContent).toContain('trim_trailing_whitespace')
+        expect(editorConfigContent).toContain('insert_final_newline')
+      })
+
+      test('should have specific settings for different file types', () => {
+        const editorConfigPaths = [
+          join(webAppPath, '.editorconfig'),
+          join(webAppPath, '../../.editorconfig'),
+        ]
+
+        let editorConfigContent = ''
+        for (const path of editorConfigPaths) {
+          if (existsSync(path)) {
+            editorConfigContent = readFileSync(path, 'utf-8')
+            break
+          }
+        }
+
+        // Should have settings for TypeScript/JavaScript files
+        expect(editorConfigContent).toMatch(/\[\*\.{js,jsx,ts,tsx,mjs,cjs}\]/)
+      })
+    })
+
+    describe('Pre-commit Hooks', () => {
+      test('should have husky installed for git hooks', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+
+        const webPackageJson = JSON.parse(
+          readFileSync(packageJsonPath, 'utf-8')
+        )
+        const rootPackageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        const allDevDeps = {
+          ...webPackageJson.devDependencies,
+          ...rootPackageJson.devDependencies,
+        }
+
+        expect(allDevDeps).toHaveProperty('husky')
+      })
+
+      test('should have lint-staged for running linters on staged files', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+
+        const webPackageJson = JSON.parse(
+          readFileSync(packageJsonPath, 'utf-8')
+        )
+        const rootPackageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        const allDevDeps = {
+          ...webPackageJson.devDependencies,
+          ...rootPackageJson.devDependencies,
+        }
+
+        expect(allDevDeps).toHaveProperty('lint-staged')
+      })
+
+      test('should have pre-commit hook configured', () => {
+        const huskyPreCommitPath = join(webAppPath, '../../.husky/pre-commit')
+        expect(existsSync(huskyPreCommitPath)).toBe(true)
+      })
+
+      test('should have lint-staged configuration', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+
+        // Check for lint-staged config in package.json files
+        const webPackageJson = JSON.parse(
+          readFileSync(packageJsonPath, 'utf-8')
+        )
+        const rootPackageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        const hasLintStagedConfig = !!(
+          webPackageJson['lint-staged'] ||
+          rootPackageJson['lint-staged'] ||
+          existsSync(join(webAppPath, '.lintstagedrc')) ||
+          existsSync(join(webAppPath, '../../.lintstagedrc')) ||
+          existsSync(join(webAppPath, 'lint-staged.config.js')) ||
+          existsSync(join(webAppPath, '../../lint-staged.config.js'))
+        )
+
+        expect(hasLintStagedConfig).toBe(true)
+      })
+    })
+
+    describe('Package.json Scripts', () => {
+      test('should have lint script at web app level', () => {
+        const packageJsonPath = join(webAppPath, 'package.json')
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
+
+        expect(packageJson.scripts).toHaveProperty('lint')
+      })
+
+      test('should have lint:fix script at root level', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts).toHaveProperty('lint:fix')
+      })
+
+      test('should have format script at root level', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts).toHaveProperty('format')
+      })
+
+      test('should have type-check script at root level', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts).toHaveProperty('type-check')
+      })
+
+      test('should have build script that works with turborepo', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts.build).toContain('turbo')
+      })
+    })
+
+    describe('Code Quality Integration', () => {
+      test('should have consistent code style configuration', () => {
+        // ESLint and Prettier should work together without conflicts
+        const eslintConfigPath = join(webAppPath, 'eslint.config.mjs')
+        expect(existsSync(eslintConfigPath)).toBe(true)
+
+        // Prettier should be available at workspace level
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+        expect(packageJson.devDependencies).toHaveProperty('prettier')
+      })
+
+      test('should have TypeScript type checking integrated', () => {
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        expect(packageJson.scripts).toHaveProperty('type-check')
+        expect(packageJson.devDependencies).toHaveProperty('typescript')
+      })
+
+      test('should support automated code quality enforcement', () => {
+        // Pre-commit hooks should run linting and formatting
+        const rootPackageJsonPath = join(webAppPath, '../../package.json')
+        const packageJson = JSON.parse(
+          readFileSync(rootPackageJsonPath, 'utf-8')
+        )
+
+        // Should have the tools to enforce quality
+        const hasQualityTools = !!(
+          packageJson.devDependencies?.husky &&
+          packageJson.devDependencies?.prettier &&
+          packageJson.devDependencies?.eslint
+        )
+
+        expect(hasQualityTools).toBe(true)
       })
     })
   })

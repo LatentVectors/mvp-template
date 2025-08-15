@@ -1,7 +1,14 @@
 // Export all UI components from this directory
 export { Button } from './button'
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
-export { 
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './card'
+export {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuIndicator,
@@ -10,5 +17,5 @@ export {
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
-  navigationMenuTriggerStyle
+  navigationMenuTriggerStyle,
 } from './navigation-menu'

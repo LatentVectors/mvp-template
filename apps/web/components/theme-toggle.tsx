@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import * as React from 'react'
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 
 export function ThemeToggle() {
-  const { setTheme, theme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
   // useEffect only runs on the client, so now we can safely show the UI
@@ -28,9 +28,9 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+      onClick={() => setTheme(resolvedTheme === 'light' ? 'dark' : 'light')}
     >
-      {resolvedTheme === "light" ? (
+      {resolvedTheme === 'light' ? (
         <Moon className="h-[1.2rem] w-[1.2rem] transition-all" />
       ) : (
         <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
