@@ -21,14 +21,14 @@
   - [x] 2.7 Add post navigation (previous/next links)
   - [x] 2.8 Verify all blog functionality tests pass
 
-- [ ] 3. Legal Pages Implementation
-  - [ ] 3.1 Write tests for legal page rendering and navigation
-  - [ ] 3.2 Create Privacy Policy page (/privacy) with template content
-  - [ ] 3.3 Create Terms of Service page (/terms) with template content
-  - [ ] 3.4 Create Cookie Policy page (/cookies) with template content
-  - [ ] 3.5 Update footer component with legal page links
-  - [ ] 3.6 Ensure consistent styling across all legal pages
-  - [ ] 3.7 Verify all legal page tests pass
+- [x] 3. Legal Pages Implementation
+  - [x] 3.1 Write tests for legal page rendering and navigation
+  - [x] 3.2 Create Privacy Policy page (/privacy) with template content
+  - [x] 3.3 Create Terms of Service page (/terms) with template content
+  - [x] 3.4 Create Cookie Policy page (/cookies) with template content
+  - [x] 3.5 Update footer component with legal page links
+  - [x] 3.6 Ensure consistent styling across all legal pages
+  - [x] 3.7 Verify all legal page tests pass
 
 - [ ] 4. SEO Infrastructure Implementation
   - [ ] 4.1 Write tests for SEO metadata generation and sitemap functionality
