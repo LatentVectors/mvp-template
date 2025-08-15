@@ -49,6 +49,10 @@
     "starter"
   ],
   "author": "LatentVectors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LatentVectors/mvp-template.git"
+  },
   "lint-staged": {
     "*.{json,md,yml,yaml}": [
       "prettier --write"
