@@ -13,6 +13,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { MDXContent } from '@/components/blog/mdx-content'
 import { PostNavigation } from '@/components/blog/post-navigation'
+import {
+  BlogPostStructuredData,
+  BreadcrumbStructuredData,
+} from '@/components/seo/structured-data'
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -36,19 +40,38 @@ export async function generateMetadata({
   if (!post) {
     return {
       title: 'Post Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      },
     }
   }
 
+  const description =
+    post.description ||
+    post.excerpt ||
+    `Read ${post.title} on MVP Template blog`
+
   return {
     title: post.title,
-    description: post.description,
+    description,
+    keywords: [...(post.tags || []), 'blog', 'tutorial', 'web development'],
     authors: [{ name: 'MVP Template Team' }],
+    creator: 'MVP Template',
+    publisher: 'MVP Template',
+    alternates: {
+      canonical: post.url,
+    },
     openGraph: {
       title: post.title,
-      description: post.description,
+      description,
       type: 'article',
-      publishedTime: post.date,
+      publishedTime: new Date(post.date).toISOString(),
+      modifiedTime: new Date(post.date).toISOString(),
       url: post.url,
+      siteName: 'MVP Template',
+      authors: ['MVP Template Team'],
+      tags: post.tags,
       images: [
         {
           url: `/api/og?title=${encodeURIComponent(post.title)}&type=blog`,
@@ -61,8 +84,20 @@ export async function generateMetadata({
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.description,
+      description,
       images: [`/api/og?title=${encodeURIComponent(post.title)}&type=blog`],
+      creator: '@mvptemplate',
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
   }
 }
@@ -78,65 +113,93 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { previousPost, nextPost } = getAdjacentPosts(slug)
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mx-auto max-w-4xl">
-        {/* Back Navigation */}
-        <div className="mb-8">
-          <Button variant="ghost" asChild className="group">
-            <Link href="/blog" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Back to Blog
-            </Link>
-          </Button>
-        </div>
+    <>
+      {/* Structured Data */}
+      <BlogPostStructuredData
+        title={post.title}
+        description={post.description || post.excerpt || ''}
+        datePublished={post.date}
+        dateModified={post.date}
+        author="MVP Template Team"
+        slug={post.slug}
+        tags={post.tags || []}
+        readingTime={
+          typeof post.readingTime === 'string'
+            ? parseInt(post.readingTime)
+            : post.readingTime
+        }
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Home', url: 'https://mvp-template.vercel.app/' },
+          { name: 'Blog', url: 'https://mvp-template.vercel.app/blog' },
+          {
+            name: post.title,
+            url: `https://mvp-template.vercel.app/blog/${post.slug}`,
+          },
+        ]}
+      />
 
-        {/* Article Header */}
-        <header className="mb-8">
-          <div className="text-muted-foreground mb-4 flex flex-wrap items-center gap-4 text-sm">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              <time dateTime={post.date}>{formatDate(post.date)}</time>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>{post.readingTime} min read</span>
-            </div>
-          </div>
-
-          <h1 className="text-foreground mb-4 text-4xl font-bold tracking-tight lg:text-5xl">
-            {post.title}
-          </h1>
-
-          <p className="text-muted-foreground text-xl">{post.description}</p>
-
-          {post.tags && post.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {post.tags.map(tag => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </header>
-
-        {/* Article Content */}
-        <article className="prose prose-gray dark:prose-invert lg:prose-lg max-w-none">
-          <MDXContent code={post.body.code} />
-        </article>
-
-        {/* Post Navigation */}
-        <PostNavigation previousPost={previousPost} nextPost={nextPost} />
-
-        {/* Footer Navigation */}
-        <footer className="mt-12 border-t pt-8">
-          <div className="flex justify-center">
-            <Button variant="outline" asChild>
-              <Link href="/blog">← Back to all posts</Link>
+      <div className="container mx-auto px-4 py-8">
+        <div className="mx-auto max-w-4xl">
+          {/* Back Navigation */}
+          <div className="mb-8">
+            <Button variant="ghost" asChild className="group">
+              <Link href="/blog" className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                Back to Blog
+              </Link>
             </Button>
           </div>
-        </footer>
+
+          {/* Article Header */}
+          <header className="mb-8">
+            <div className="text-muted-foreground mb-4 flex flex-wrap items-center gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <Calendar className="h-4 w-4" />
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                <span>{post.readingTime} min read</span>
+              </div>
+            </div>
+
+            <h1 className="text-foreground mb-4 text-4xl font-bold tracking-tight lg:text-5xl">
+              {post.title}
+            </h1>
+
+            <p className="text-muted-foreground text-xl">{post.description}</p>
+
+            {post.tags && post.tags.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {post.tags.map(tag => (
+                  <Badge key={tag} variant="secondary">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </header>
+
+          {/* Article Content */}
+          <article className="prose prose-gray dark:prose-invert lg:prose-lg max-w-none">
+            <MDXContent code={post.body.code} />
+          </article>
+
+          {/* Post Navigation */}
+          <PostNavigation previousPost={previousPost} nextPost={nextPost} />
+
+          {/* Footer Navigation */}
+          <footer className="mt-12 border-t pt-8">
+            <div className="flex justify-center">
+              <Button variant="outline" asChild>
+                <Link href="/blog">← Back to all posts</Link>
+              </Button>
+            </div>
+          </footer>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

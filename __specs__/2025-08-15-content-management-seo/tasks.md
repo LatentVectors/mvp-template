@@ -30,15 +30,15 @@
   - [x] 3.6 Ensure consistent styling across all legal pages
   - [x] 3.7 Verify all legal page tests pass
 
-- [ ] 4. SEO Infrastructure Implementation
-  - [ ] 4.1 Write tests for SEO metadata generation and sitemap functionality
-  - [ ] 4.2 Implement Next.js Metadata API for all pages
-  - [ ] 4.3 Configure next-sitemap for automatic XML sitemap generation
-  - [ ] 4.4 Create robots.txt route handler
-  - [ ] 4.5 Implement Open Graph image generation
-  - [ ] 4.6 Add structured data markup for blog posts
-  - [ ] 4.7 Configure canonical URLs and meta descriptions
-  - [ ] 4.8 Verify all SEO functionality tests pass
+- [x] 4. SEO Infrastructure Implementation
+  - [x] 4.1 Write tests for SEO metadata generation and sitemap functionality
+  - [x] 4.2 Implement Next.js Metadata API for all pages
+  - [x] 4.3 Configure next-sitemap for automatic XML sitemap generation
+  - [x] 4.4 Create robots.txt route handler
+  - [x] 4.5 Implement Open Graph image generation
+  - [x] 4.6 Add structured data markup for blog posts
+  - [x] 4.7 Configure canonical URLs and meta descriptions
+  - [x] 4.8 Verify all SEO functionality tests pass
 
 - [ ] 5. Content Examples and Documentation
   - [ ] 5.1 Write tests for example content rendering

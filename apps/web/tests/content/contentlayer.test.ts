@@ -50,8 +50,8 @@ describe('Contentlayer Configuration', () => {
       expect(post.slug).toBeDefined()
       expect(typeof post.slug).toBe('string')
       expect(post.slug.length).toBeGreaterThan(0)
-      // Slug should be URL-safe path (can include forward slashes)
-      expect(post.slug).toMatch(/^\/[a-z0-9-\/]+$/)
+      // Slug should be URL-safe path (without leading slash, can include forward slashes)
+      expect(post.slug).toMatch(/^[a-z0-9-\/]+$/)
     })
   })
 
