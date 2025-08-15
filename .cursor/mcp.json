@@ -1,0 +1,34 @@
+{
+    "mcpServers": {
+        "Supabase": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@supabase/mcp-server-supabase@latest",
+                "--read-only",
+                "--project-ref=<project-ref>"
+            ],
+            "env": {
+                "SUPABASE_ACCESS_TOKEN": "<personal-access-token>"
+            }
+        },
+        "Playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        },
+        "Sentry": {
+            "url": "https://mcp.sentry.dev/mcp",
+            "headers": {}
+        },
+        "Vercel": {
+            "url": "https://mcp.vercel.com",
+            "headers": {}
+        },
+        "Context7": {
+            "url": "https://mcp.context7.com/mcp",
+            "headers": {}
+        }
+    }
+}
