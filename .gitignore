@@ -24,9 +24,6 @@ share/python-wheels/
 MANIFEST
 
 # Package manager files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 .pnpm
 .uv/
 
@@ -273,10 +270,6 @@ service-account-key.json
 # Content and generated files
 .contentlayer/
 content/.contentlayer/
-
-# Runtime version files
-.nvmrc
-.python-version
 
 # Agent/Service specific logs
 services/*/logs/
