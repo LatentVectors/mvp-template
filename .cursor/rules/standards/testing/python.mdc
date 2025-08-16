@@ -1,5 +1,5 @@
 ---
-globs: test/**/test_*.py
+description: Rules for writing unit test for Python.
 alwaysApply: false
 ---
 

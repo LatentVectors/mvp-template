@@ -1,0 +1,314 @@
+---
+description: Guidelines for testing Supabase.
+alwaysApply: false
+---
+# Supabase Project Testing Guidelines
+
+These rules are optimized for efficient, reliable testing in Supabase projects,
+tailored for coding agents and automation workflows.
+
+---
+
+## Checklist (before applying these guidelines)
+
+- Identify the type of code or policy you are testing (RLS, RPC, client logic).
+- Determine the correct test type: pgTAP unit, supabase-js integration, or
+  end-to-end.
+- Ensure test independence and proper isolation.
+- Prepare required mock or test data according to environment guidelines.
+- Confirm test command is integrated with CI/CD and will block merges if
+  failures occur.
+- Organize test files as described in 'Repository Organization.'
+
+## Core Principles
+
+- **Test Your Code Only:** Focus on testing your RLS policies, PostgreSQL
+  functions (RPCs), and client logic. Do not write tests for the Supabase
+  framework itself.
+- **Follow the Testing Pyramid:**
+  - Prioritize fast and thorough `pgTAP` unit tests.
+  - Implement fewer, more targeted `supabase-js` integration tests.
+  - Reserve full E2E tests for vital or user-critical flows.
+- **CI/CD Integration:**
+  - All tests must be executable with a single command and fully integrated into
+    the CI/CD pipeline.
+  - Prevent merging to the main branch if any test fails.
+- **Test Isolation:**
+  - Ensure that each test is fully independent. No test should rely on the state
+    or data from another.
+
+## Environment Usage Guidelines
+
+- **Local Development:**
+  - Use `supabase/seed.sql` to populate development databases with consistent
+    mock data for manual development only.
+  - Run `supabase db reset` to apply migrations and seed the database.
+- **Database Tests (`pgTAP`):**
+  - Use the `supabase test db` command, which creates a separate, temporary, and
+    disposable database.
+  - The test database does _not_ run `seed.sql` and does not impact your
+    development database.
+- **Client-Side Tests (`supabase-js`):**
+  - Run against the main development database.
+  - Each test must generate its own unique data and perform full cleanup
+    afterward.
+  - Do not use or depend on data from `seed.sql` in these tests.
+
+## Repository Organization
+
+- **Database Tests:**
+  - Place all `pgTAP` tests in `supabase/tests/`, organized by feature
+    (`policies/`, `functions/`).
+  - Use the naming convention `[feature_name]_test.sql`.
+- **Client Tests:**
+  - Store client-side tests in a root `tests/` or `__tests__/` directory,
+    categorized by type (`integration/`, `e2e/`).
+  - Use `[feature-name].test.ts` or `[feature-name].spec.ts` for file names.
+
+## Database Testing (`pgTAP`) Rules
+
+- **Focus Areas:** Test RLS policies, PostgreSQL functions, and triggers.
+- **Transactional Isolation:**
+  - Wrap every test file with `BEGIN;` and `ROLLBACK;` to guarantee automatic
+    cleanup.
+- **RLS Testing Procedure:**
+  1. Create test users and data inside the transaction.
+  2. Set user context via `SET LOCAL role` and `SET LOCAL request.jwt.claims`.
+  3. Use `lives_ok()` for expected permitted actions.
+  4. Use `throws_ok()` to confirm forbidden actions with specific RLS error
+     validation.
+  5. Test both positive (allowed) and negative (denied) cases for each policy.
+- **pgTAP Test Example:**
+  ```sql
+  BEGIN;
+  SELECT plan(2);
+
+  -- Setup: Insert test user.
+  INSERT INTO auth.users (id) VALUES ('...test-uuid...');
+
+  -- Set user context.
+  SET LOCAL role authenticated;
+  SET LOCAL request.jwt.claims TO '{"sub": "...test-uuid..."}';
+
+  -- Test positive case.
+  SELECT lives_ok($$ INSERT INTO public.profiles (id) VALUES ('...test-uuid...') $$);
+
+  -- Test negative case.
+  SELECT throws_ok($$ INSERT INTO public.profiles (id) VALUES (gen_random_uuid()) $$);
+
+  SELECT * FROM finish();
+  ROLLBACK;
+  ```
+
+## Client-Side Testing (`supabase-js`) Rules
+
+- **Primary Targets:** Test authentication flows, API operations, and storage
+  interactions.
+- **Key Management:**
+  - Only use the `SUPABASE_SERVICE_ROLE_KEY` for automated setup/teardown —
+    never expose it to client code.
+- **Manual Setup/Cleanup:**
+  - Use test runner hooks (`beforeAll`, `afterAll`) for creating and cleaning up
+    unique test data.
+  - Use an admin client for setup and teardown.
+- **Client Test Example (Vitest/Jest):**
+  ```typescript
+  // Admin client (setup/teardown only)
+  const adminSupabase = createClient(URL, SERVICE_ROLE_KEY);
+
+  describe("Feature API", () => {
+    let testUser;
+
+    beforeAll(async () => {
+      // Create a unique user
+      const email = `test-user-${Date.now()}@example.com`;
+      const { data } = await adminSupabase.auth.signUp({
+        email,
+        password: "password",
+      });
+      testUser = data.user;
+    });
+
+    afterAll(async () => {
+      // Delete the test user
+      await adminSupabase.auth.admin.deleteUser(testUser.id);
+    });
+
+    it("should perform some action as the test user", async () => {
+      const userClient = createClient(URL, ANON_KEY);
+      await userClient.auth.signInWithPassword({
+        email: testUser.email,
+        password: "password",
+      });
+      // ...assertions...
+    });
+  });
+  ```
+
+## Anti-Patterns — Avoid All of the Following:
+
+- Do **not** test RLS solely from client code. Always include `pgTAP` tests for
+  security validation.
+- Do **not** keep flaky tests. Fix them immediately or remove them.
+- Do **not** write tests with interdependencies. Each test must stand alone.
+- Do **not** hardcode static data (IDs, emails). Always generate test data
+  dynamically during setup.
+
+After writing or editing any test, validate it by running it locally and
+ensuring all checks pass. If a test fails, address issues before merging.
+Proceed to commit only if all guidelines are satisfied.
+# Supabase Project Testing Guidelines
+
+These rules are optimized for efficient, reliable testing in Supabase projects,
+tailored for coding agents and automation workflows.
+
+---
+
+## Checklist (before applying these guidelines)
+
+- Identify the type of code or policy you are testing (RLS, RPC, client logic).
+- Determine the correct test type: pgTAP unit, supabase-js integration, or
+  end-to-end.
+- Ensure test independence and proper isolation.
+- Prepare required mock or test data according to environment guidelines.
+- Confirm test command is integrated with CI/CD and will block merges if
+  failures occur.
+- Organize test files as described in 'Repository Organization.'
+
+## Core Principles
+
+- **Test Your Code Only:** Focus on testing your RLS policies, PostgreSQL
+  functions (RPCs), and client logic. Do not write tests for the Supabase
+  framework itself.
+- **Follow the Testing Pyramid:**
+  - Prioritize fast and thorough `pgTAP` unit tests.
+  - Implement fewer, more targeted `supabase-js` integration tests.
+  - Reserve full E2E tests for vital or user-critical flows.
+- **CI/CD Integration:**
+  - All tests must be executable with a single command and fully integrated into
+    the CI/CD pipeline.
+  - Prevent merging to the main branch if any test fails.
+- **Test Isolation:**
+  - Ensure that each test is fully independent. No test should rely on the state
+    or data from another.
+
+## Environment Usage Guidelines
+
+- **Local Development:**
+  - Use `supabase/seed.sql` to populate development databases with consistent
+    mock data for manual development only.
+  - Run `supabase db reset` to apply migrations and seed the database.
+- **Database Tests (`pgTAP`):**
+  - Use the `supabase test db` command, which creates a separate, temporary, and
+    disposable database.
+  - The test database does _not_ run `seed.sql` and does not impact your
+    development database.
+- **Client-Side Tests (`supabase-js`):**
+  - Run against the main development database.
+  - Each test must generate its own unique data and perform full cleanup
+    afterward.
+  - Do not use or depend on data from `seed.sql` in these tests.
+
+## Repository Organization
+
+- **Database Tests:**
+  - Place all `pgTAP` tests in `supabase/tests/`, organized by feature
+    (`policies/`, `functions/`).
+  - Use the naming convention `[feature_name]_test.sql`.
+- **Client Tests:**
+  - Store client-side tests in a root `tests/` or `__tests__/` directory,
+    categorized by type (`integration/`, `e2e/`).
+  - Use `[feature-name].test.ts` or `[feature-name].spec.ts` for file names.
+
+## Database Testing (`pgTAP`) Rules
+
+- **Focus Areas:** Test RLS policies, PostgreSQL functions, and triggers.
+- **Transactional Isolation:**
+  - Wrap every test file with `BEGIN;` and `ROLLBACK;` to guarantee automatic
+    cleanup.
+- **RLS Testing Procedure:**
+  1. Create test users and data inside the transaction.
+  2. Set user context via `SET LOCAL role` and `SET LOCAL request.jwt.claims`.
+  3. Use `lives_ok()` for expected permitted actions.
+  4. Use `throws_ok()` to confirm forbidden actions with specific RLS error
+     validation.
+  5. Test both positive (allowed) and negative (denied) cases for each policy.
+- **pgTAP Test Example:**
+  ```sql
+  BEGIN;
+  SELECT plan(2);
+
+  -- Setup: Insert test user.
+  INSERT INTO auth.users (id) VALUES ('...test-uuid...');
+
+  -- Set user context.
+  SET LOCAL role authenticated;
+  SET LOCAL request.jwt.claims TO '{"sub": "...test-uuid..."}';
+
+  -- Test positive case.
+  SELECT lives_ok($$ INSERT INTO public.profiles (id) VALUES ('...test-uuid...') $$);
+
+  -- Test negative case.
+  SELECT throws_ok($$ INSERT INTO public.profiles (id) VALUES (gen_random_uuid()) $$);
+
+  SELECT * FROM finish();
+  ROLLBACK;
+  ```
+
+## Client-Side Testing (`supabase-js`) Rules
+
+- **Primary Targets:** Test authentication flows, API operations, and storage
+  interactions.
+- **Key Management:**
+  - Only use the `SUPABASE_SERVICE_ROLE_KEY` for automated setup/teardown —
+    never expose it to client code.
+- **Manual Setup/Cleanup:**
+  - Use test runner hooks (`beforeAll`, `afterAll`) for creating and cleaning up
+    unique test data.
+  - Use an admin client for setup and teardown.
+- **Client Test Example (Vitest/Jest):**
+  ```typescript
+  // Admin client (setup/teardown only)
+  const adminSupabase = createClient(URL, SERVICE_ROLE_KEY);
+
+  describe("Feature API", () => {
+    let testUser;
+
+    beforeAll(async () => {
+      // Create a unique user
+      const email = `test-user-${Date.now()}@example.com`;
+      const { data } = await adminSupabase.auth.signUp({
+        email,
+        password: "password",
+      });
+      testUser = data.user;
+    });
+
+    afterAll(async () => {
+      // Delete the test user
+      await adminSupabase.auth.admin.deleteUser(testUser.id);
+    });
+
+    it("should perform some action as the test user", async () => {
+      const userClient = createClient(URL, ANON_KEY);
+      await userClient.auth.signInWithPassword({
+        email: testUser.email,
+        password: "password",
+      });
+      // ...assertions...
+    });
+  });
+  ```
+
+## Anti-Patterns — Avoid All of the Following:
+
+- Do **not** test RLS solely from client code. Always include `pgTAP` tests for
+  security validation.
+- Do **not** keep flaky tests. Fix them immediately or remove them.
+- Do **not** write tests with interdependencies. Each test must stand alone.
+- Do **not** hardcode static data (IDs, emails). Always generate test data
+  dynamically during setup.
+
+After writing or editing any test, validate it by running it locally and
+ensuring all checks pass. If a test fails, address issues before merging.
+Proceed to commit only if all guidelines are satisfied.
