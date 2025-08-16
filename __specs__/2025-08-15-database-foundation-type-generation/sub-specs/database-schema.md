@@ -12,8 +12,8 @@ This is the database schema implementation for the spec detailed in
 -- Core Application Tables
 -- =====================================================
 
--- Users table - extends Supabase auth.users with application data
-CREATE TABLE IF NOT EXISTS public.users (
+-- Profiles table - extends Supabase auth.users with application data
+CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 -- Subscriptions table - billing and plan management
 CREATE TABLE IF NOT EXISTS public.subscriptions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     status TEXT NOT NULL CHECK (status IN ('trial', 'active', 'cancelled', 'expired', 'past_due')),
     plan TEXT NOT NULL CHECK (plan IN ('free', 'basic', 'pro')),
     lemon_squeezy_id TEXT, -- External payment provider ID
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.subscriptions (
 -- Usage counters table - quota tracking and billing metrics
 CREATE TABLE IF NOT EXISTS public.usage_counters (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     metric TEXT NOT NULL, -- 'api_calls', 'storage_mb', 'agent_runs', etc.
     count INTEGER NOT NULL DEFAULT 0,
     window_start TIMESTAMPTZ NOT NULL, -- Start of billing/usage window
@@ -79,8 +79,8 @@ END;
 $$ language 'plpgsql';
 
 -- Apply updated_at triggers to all tables
-CREATE TRIGGER update_users_updated_at
-    BEFORE UPDATE ON public.users
+CREATE TRIGGER update_profiles_updated_at
+    BEFORE UPDATE ON public.profiles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_subscriptions_updated_at
@@ -99,27 +99,27 @@ CREATE TRIGGER update_usage_counters_updated_at
 -- Enable Row Level Security
 -- =====================================================
 
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.usage_counters ENABLE ROW LEVEL SECURITY;
 
 -- =====================================================
--- Users Table Policies
+-- Profiles Table Policies
 -- =====================================================
 
 -- Users can read their own profile
-DROP POLICY IF EXISTS "Users can read own profile" ON public.users;
-CREATE POLICY "Users can read own profile" ON public.users
+DROP POLICY IF EXISTS "Users can read own profile" ON public.profiles;
+CREATE POLICY "Users can read own profile" ON public.profiles
     FOR SELECT USING (auth.uid() = id);
 
 -- Users can update their own profile
-DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
-CREATE POLICY "Users can update own profile" ON public.users
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+CREATE POLICY "Users can update own profile" ON public.profiles
     FOR UPDATE USING (auth.uid() = id);
 
--- Service role can manage all users (for webhooks, admin operations)
-DROP POLICY IF EXISTS "Service role can manage users" ON public.users;
-CREATE POLICY "Service role can manage users" ON public.users
+-- Service role can manage all profiles (for webhooks, admin operations)
+DROP POLICY IF EXISTS "Service role can manage profiles" ON public.profiles;
+CREATE POLICY "Service role can manage profiles" ON public.profiles
     FOR ALL USING (current_setting('request.jwt.claims', true)::json->>'role' = 'service_role');
 
 -- =====================================================
@@ -212,9 +212,9 @@ CREATE POLICY "Service role can manage all files" ON storage.objects
 
 ## Schema Design Rationale
 
-### User Management
+### Profile Management
 
-- **Extension Pattern**: `public.users` extends `auth.users` rather than replacing it
+- **Extension Pattern**: `public.profiles` extends `auth.users` rather than replacing it
 - **Data Sync**: Email stored in both tables for application convenience
 - **Cascade Deletes**: User deletion removes all associated data automatically
 

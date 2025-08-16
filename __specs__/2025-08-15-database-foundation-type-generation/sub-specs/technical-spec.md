@@ -43,11 +43,11 @@ This is the technical specification for the spec detailed in
 
 ### Authentication System Foundation (Phase 4 Preparation)
 
-**User Table Design:**
+**Profiles Table Design:**
 
 ```sql
 -- Must extend auth.users table, not replace it
-CREATE TABLE public.users (
+CREATE TABLE public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     email TEXT NOT NULL, -- Synced from auth.users
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -58,14 +58,14 @@ CREATE TABLE public.users (
 **Auth Integration Requirements:**
 
 - Supabase Auth manages authentication (signup, login, sessions)
-- Public.users table stores application-specific user data
+- Public.profiles table stores application-specific user data
 - RLS policies use `auth.uid()` function for user identification
 - Email verification enabled by default in Supabase Auth settings
 
 **Future Auth UI Integration:**
 
-- `@supabase/auth-ui-react` will consume these user records
-- Session management through Supabase client automatically links to public.users
+- `@supabase/auth-ui-react` will consume these profile records
+- Session management through Supabase client automatically links to public.profiles
 - Email/password + magic link flows supported out of the box
 
 ### Payment System Foundation (Phase 6 Preparation)
@@ -76,7 +76,7 @@ CREATE TABLE public.users (
 -- Designed for Lemon Squeezy webhook integration
 CREATE TABLE public.subscriptions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
     status TEXT NOT NULL CHECK (status IN ('trial', 'active', 'cancelled', 'expired')),
     plan TEXT NOT NULL CHECK (plan IN ('free', 'basic', 'pro')),
     lemon_squeezy_id TEXT, -- External payment provider ID
@@ -158,7 +158,7 @@ VALUES ('user-files', 'user-files', false);
 export interface Database {
   public: {
     Tables: {
-      users: {
+      profiles: {
         Row: { id: string; email: string; created_at: string; updated_at: string }
         Insert: { id: string; email: string; created_at?: string; updated_at?: string }
         Update: { id?: string; email?: string; created_at?: string; updated_at?: string }

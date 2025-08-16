@@ -9,14 +9,14 @@
   - [x] 1.4 Configure local Supabase initialization and link projects
   - [x] 1.5 Verify CLI connection and project access for both environments
 
-- [ ] 2. Database Schema Implementation
-  - [ ] 2.1 Create migration file 0001_init.sql with baseline tables (users, subscriptions,
+- [x] 2. Database Schema Implementation
+  - [x] 2.1 Create migration file 0001_init.sql with baseline tables (profiles, subscriptions,
         usage_counters)
-  - [ ] 2.2 Add proper foreign key relationships, constraints, and indexes
-  - [ ] 2.3 Implement updated_at timestamp triggers for all tables
-  - [ ] 2.4 Create migration file 0002_policies.sql with Row Level Security policies
-  - [ ] 2.5 Apply migrations to development environment and verify schema
-  - [ ] 2.6 Apply migrations to production environment
+  - [x] 2.2 Add proper foreign key relationships, constraints, and indexes
+  - [x] 2.3 Implement updated_at timestamp triggers for all tables
+  - [x] 2.4 Create migration file 0002_policies.sql with Row Level Security policies
+  - [x] 2.5 Apply migrations to development environment and verify schema
+  - [x] 2.6 Apply migrations to production environment
 
 - [ ] 3. Storage Bucket Configuration
   - [ ] 3.1 Create migration file 0003_storage.sql for storage bucket setup
