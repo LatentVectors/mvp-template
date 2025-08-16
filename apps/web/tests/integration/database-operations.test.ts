@@ -78,8 +78,12 @@ describe('Database Operations with Generated Types', () => {
       expect(authError).toBeNull()
       expect(authUser?.user).toBeDefined()
 
+      const userIdFromAuth = authUser?.user?.id
+      if (!userIdFromAuth) {
+        throw new Error('Failed to get created user id')
+      }
       const profileData: ProfileInsert = {
-        id: authUser!.user.id,
+        id: userIdFromAuth,
         email,
       }
 
@@ -314,7 +318,7 @@ describe('Database Operations with Generated Types', () => {
         .eq('metric', 'api_calls')
         .single()
 
-      const currentCount = current?.count || 0
+      const currentCount = current?.count ?? 0
 
       // Update count
       const updateData: UsageCounterUpdate = {

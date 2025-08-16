@@ -11,6 +11,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '.'),
+      '.contentlayer/generated': path.resolve(
+        __dirname,
+        'tests/fixtures/contentlayer-generated.ts'
+      ),
     },
   },
 })
