@@ -172,15 +172,18 @@ dist
 supabase/.branches
 supabase/.temp
 supabase/logs
+.supabase/
 
 # Build outputs (duplicate - consolidated above)
 # .turbo/
 .vercel
 
 # Generated types (these should be regenerated, not committed)
-packages/types/*.ts
-packages/types/supabase.ts
-packages/types/agent-api.ts
+# Run `npm run typegen:supabase` to generate these files locally
+packages/types/src/generated/supabase.ts
+packages/types/dist/
+packages/types/src/supabase-generated.ts
+packages/types/src/agent-api-generated.ts
 
 # Python virtual environments
 venv/

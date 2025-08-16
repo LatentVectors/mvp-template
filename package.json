@@ -13,7 +13,17 @@
     "test:all": "turbo run test",
     "clean": "turbo run clean",
     "clean:all": "rm -rf node_modules && pnpm -r exec rm -rf node_modules && rm -rf .turbo",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:restart": "supabase stop && supabase start",
+    "db:reset": "supabase db reset",
+    "db:migrate": "supabase db push",
+    "db:status": "supabase status",
+    "db:seed": "supabase db seed",
+    "typegen:supabase": "node scripts/typegen-supabase.mjs",
+    "supabase:link": "supabase link --project-ref",
+    "supabase:login": "supabase login"
   },
   "workspaces": [
     "apps/*",
