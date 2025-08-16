@@ -18,12 +18,12 @@
   - [x] 2.5 Verify all RLS scenarios are covered with proper user context simulation
   - [x] 2.6 Verify all pgTAP policy tests pass
 
-- [ ] 3. Implement pgTAP Tests for SQL Functions and Triggers
-  - [ ] 3.1 Write tests for `get_user_file_path` function with various inputs
-  - [ ] 3.2 Write tests for `validate_user_file_path` function edge cases
-  - [ ] 3.3 Write tests for timestamp update triggers (created_at/updated_at behavior)
-  - [ ] 3.4 Write tests for any other custom SQL functions or stored procedures
-  - [ ] 3.5 Verify all SQL function tests pass
+- [x] 3. Implement pgTAP Tests for SQL Functions and Triggers
+  - [x] 3.1 Write tests for `get_user_file_path` function with various inputs
+  - [x] 3.2 Write tests for `validate_user_file_path` function edge cases
+  - [x] 3.3 Write tests for timestamp update triggers (created_at/updated_at behavior)
+  - [x] 3.4 Write tests for any other custom SQL functions or stored procedures
+  - [x] 3.5 Verify all SQL function tests pass
 
 - [ ] 4. Refactor Application Tests - Remove Database Security Testing
   - [ ] 4.2 Remove RLS policy assertions from `apps/web/tests/db/rls.test.ts`

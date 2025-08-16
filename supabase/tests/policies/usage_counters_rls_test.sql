@@ -1,6 +1,3 @@
--- pgTAP tests for usage_counters RLS policies
-
-CREATE EXTENSION IF NOT EXISTS pgtap;
 
 BEGIN;
 

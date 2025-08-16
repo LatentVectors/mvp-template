@@ -1,6 +1,3 @@
--- pgTAP tests for subscriptions RLS policies
-
-CREATE EXTENSION IF NOT EXISTS pgtap;
 
 BEGIN;
 

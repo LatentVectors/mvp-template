@@ -1,9 +1,3 @@
--- pgTAP tests for profiles RLS policies
--- Ensures isolation via transaction with ROLLBACK
-
--- Ensure pgTAP is available
-CREATE EXTENSION IF NOT EXISTS pgtap;
-
 BEGIN;
 
 SET LOCAL search_path = extensions, public, pg_temp;

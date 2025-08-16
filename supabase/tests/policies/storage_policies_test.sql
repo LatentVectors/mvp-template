@@ -1,6 +1,3 @@
--- pgTAP tests for storage bucket configuration and path validation helpers
-
-CREATE EXTENSION IF NOT EXISTS pgtap;
 
 BEGIN;
 
