@@ -20,8 +20,7 @@ const config = {
     {
       files: ['*.md', '*.mdx'],
       options: {
-        printWidth: 100,
-        proseWrap: 'always',
+        proseWrap: 'never',
       },
     },
   ],
