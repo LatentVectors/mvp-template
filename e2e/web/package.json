@@ -1,0 +1,14 @@
+{
+  "name": "e2e-web",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "codegen": "playwright codegen http://127.0.0.1:3000"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.2",
+    "typescript": "^5.7.2"
+  }
+}

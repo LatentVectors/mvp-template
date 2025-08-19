@@ -1,3 +1,15 @@
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { Navigation } from '@/components/navigation'
+
+describe('Navigation auth link', () => {
+  it('includes "Sign in" link to /auth', () => {
+    render(<Navigation />)
+    const link = screen.getByRole('menuitem', { name: /sign in/i })
+    expect(link).toHaveAttribute('href', '/auth')
+  })
+})
+
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Navigation } from '@/components/navigation'

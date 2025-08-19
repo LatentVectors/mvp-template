@@ -4,6 +4,13 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import AuthPage from '@/app/(marketing)/auth/page'
 
+vi.mock('next/navigation', () => {
+  return {
+    useRouter: () => ({ replace: vi.fn(), push: vi.fn(), prefetch: vi.fn() }),
+    useSearchParams: () => new URLSearchParams(''),
+  }
+})
+
 vi.mock('@supabase/auth-ui-react', () => {
   return {
     Auth: (props: { view?: string }) => {

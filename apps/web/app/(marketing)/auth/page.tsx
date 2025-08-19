@@ -4,16 +4,41 @@ import * as React from 'react'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '@/lib/supabase/client'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 type AuthView = 'sign_in' | 'sign_up' | 'forgotten_password'
 
 export default function AuthPage() {
   const [view, setView] = React.useState<AuthView>('sign_in')
   const [message, setMessage] = React.useState<string | null>(null)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const returnTo = searchParams?.get('returnTo')
 
   React.useEffect(() => {
     setMessage(null)
   }, [view])
+
+  React.useEffect(() => {
+    let mounted = true
+    const run = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (!mounted) return
+      if (data.session) {
+        router.replace((returnTo || '/app') as never)
+      }
+    }
+    run()
+    const { data: sub } = supabase.auth.onAuthStateChange(event => {
+      if (event === 'SIGNED_IN') {
+        router.replace((returnTo || '/app') as never)
+      }
+    })
+    return () => {
+      mounted = false
+      sub.subscription.unsubscribe()
+    }
+  }, [router, returnTo])
 
   return (
     <div className="container mx-auto max-w-md px-4 py-10">
