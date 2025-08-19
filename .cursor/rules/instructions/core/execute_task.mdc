@@ -63,7 +63,7 @@ Search and extract relevant sections from technical-spec.md to understand the te
 
 ### Step 3: Best Practices Review
 
-Use the context-fetcher subagent to retrieve relevant sections from @.cursor/rules/standards/best-practices.md that apply to the current task's technology stack and feature type.
+Retrieve relevant sections from @.cursor/rules/standards/best_practices.md that apply to the current task's technology stack and feature type.
 
 <selective_reading>
   <search_best_practices>
@@ -92,7 +92,7 @@ Use the context-fetcher subagent to retrieve relevant sections from @.cursor/rul
 
 ### Step 4: Code Style Review
 
-Follow the appropriate code style rules for all files.
+Follow the appropriate code style rules for all files. Code style rules are stored in @.cursor/rules/standards/code_style. Standards and code style for testing are found in @.cursor/rules/standards/testing. Standards for code style and testing are organized in specific language/technology/framework files within their respective directories.
 
 <selective_reading>
   <search_code_style>
@@ -132,6 +132,7 @@ Execute the parent task and all sub-tasks in order using test-driven development
 <execution_order>
   <subtask_1_tests>
     IF sub-task 1 is "Write tests for [feature]":
+      - Read @.cursor/rules/standards/unit_test_generation.mdc to review best practices for unit testing.
       - Write all tests for the parent feature
       - Include unit tests, integration tests, edge cases
       - Run tests to ensure they fail appropriately
@@ -248,3 +249,28 @@ Update the tasks.md file immediately after completing each task to track progres
 </step>
 
 </process_flow>
+
+## Reference Documents
+
+### Spec Structure
+Specs adhere to a standard structure and are organized in spec-specific sub-directories in the root-level `__specs__` directory. Use this structure to find background context to the task within a given spec-specific sub-directory.
+
+<spec_directory>
+  @sub-specs/technical-spec.md - Detailed technical specification for all tasks.
+  @spec-lite.md - Abbreviated overview of the specs intended goal.
+  @spec.md - High-level overview of the specs intended goal, user-stories, scopes, and deliverables.
+  @tasks.md - Lists of task breaking the spec into manageable phases.
+</spec_directory>
+
+
+### Project Background
+
+The following files provide high-level background an implementation details for the project overall.
+
+<project_docs>
+  @.cursor/rules/mission.md - Overview of the projects goal and user stories.
+  @.cursor/rules/overview.mdc - Broad overview of projects purpose, technologies, best practices, architecture, and implementation.
+  @.cursor/rules/structure.mdc - Detailed directory tree for the project.
+  @.cursor/rules/tech_stack.mdc - Detailed information on the projects tech-stack.
+  @.cursor/rules/roadmap.md - Overview of the projects roadmap.
+</project_docs>

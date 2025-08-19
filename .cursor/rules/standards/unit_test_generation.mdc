@@ -1,0 +1,187 @@
+---
+description: Rules for unit test generation.
+alwaysApply: false
+---
+# Unit Test Generation Rules
+
+## Overview
+
+Generate effective and maintainable unit tests by following a structured workflow that adapts to both Test-Driven Development (TDD) and testing existing code. The primary goal is to produce isolated, behavior-driven tests that are resilient to implementation changes and to explicitly avoid common anti-patterns.
+
+---
+
+## Process Flow for Test Generation
+
+<process_flow>
+
+<step number="1" name="scenario_identification">
+
+### Step 1: Scenario Identification
+
+First, determine the development context. Is the implementation code already written, or are you writing the test first (TDD)?
+
+<instructions>
+  ACTION: Analyze the task requirements.
+  QUERY: Does the target code (function, class, component) already exist?
+  DECIDE: Set mode to `TDD_SCENARIO` if code does not exist. Set mode to `LEGACY_CODE_SCENARIO` if code exists.
+</instructions>
+
+</step>
+
+<step number="2" name="test_scoping_and_definition">
+
+### Step 2: Test Scoping and Definition
+
+Define the precise behavior to be tested. This approach varies based on the scenario.
+
+<if_tdd_scenario>
+  <scope_analysis>
+    <analyze_from_requirements>
+      - Read the feature specification or user story.
+      - Envision the simplest possible public API (function signature, component props) that would satisfy a piece of the requirement.
+      - Define a single, testable scenario (e.g., "given a valid input, it should return the expected output").
+    </analyze_from_requirements>
+  </scope_analysis>
+  <instructions>
+    ACTION: Define a function/method signature that doesn't exist yet.
+    ANALYZE: The requirement to isolate one behavior.
+    DEFINE: The inputs and the expected output for this behavior.
+  </instructions>
+</if_tdd_scenario>
+
+<else_legacy_code_scenario>
+  <scope_analysis>
+    <analyze_existing_code>
+      - Read the existing code unit (function, method, component).
+      - Identify its public API and its current behavior.
+      - Select a single execution path to test (e.g., the "happy path," an error condition, or an edge case).
+    </analyze_existing_code>
+  </scope_analysis>
+  <instructions>
+    ACTION: Read the specific code unit.
+    ANALYZE: Its inputs, outputs, and branches.
+    DEFINE: A single existing behavior to validate with a test.
+  </instructions>
+</else_legacy_code_scenario>
+
+</step>
+
+<step number="3" name="test_structure_and_naming">
+
+### Step 3: Test Structure and Naming
+
+Establish a clean, readable structure for the test case using standard conventions.
+
+<test_setup>
+  <apply_structure>
+    - Use the Arrange-Act-Assert (AAA) pattern.
+    - Create a descriptive test name following the `UnitOfWork_Scenario_ExpectedResult` convention.
+  </apply_structure>
+</test_setup>
+
+<instructions>
+  ACTION: Create the test block with a descriptive name.
+  STRUCTURE: Lay out the test with three distinct sections: // Arrange, // Act, // Assert.
+  ENSURE: The test's purpose is immediately clear from its name.
+</instructions>
+
+</step>
+
+<step number="4" name="dependency_isolation">
+
+### Step 4: Dependency Isolation
+
+Identify and neutralize all external dependencies to ensure the test is a true "unit" test.
+
+<if_tdd_scenario>
+  <dependency_analysis>
+    <anticipate_dependencies>
+      - Based on the requirements, anticipate what collaborators this unit will need (e.g., an API client, a logger).
+      - Define the interfaces for these collaborators through mocks or stubs.
+    </anticipate_dependencies>
+  </dependency_analysis>
+  <instructions>
+    ACTION: Design the interactions your unit will have.
+    IMPLEMENT: Mocks that simulate the behavior of dependencies that do not yet exist.
+  </instructions>
+</if_tdd_scenario>
+
+<else_legacy_code_scenario>
+  <dependency_analysis>
+    <identify_externals>
+      FIND any existing dependencies on databases, network requests, file systems, or other modules.
+    </identify_externals>
+  </dependency_analysis>
+  <instructions>
+    ACTION: Scan the code unit for external calls.
+    IMPLEMENT: Mocks or stubs to replace the real dependencies and control their behavior.
+  </instructions>
+</else_legacy_code_scenario>
+
+</step>
+
+<step number="5" name="test_implementation">
+
+### Step 5: Test Implementation
+
+Write the core logic of the test following the AAA pattern.
+
+<aaa_implementation>
+  <arrange>
+    - Set up all required data, variables, and mock implementations.
+    - Prepare the specific inputs for the code unit.
+  </arrange>
+  <act>
+    - Execute the function/method being tested exactly once.
+  </act>
+  <assert>
+    - Compare the actual result from the 'Act' phase with the expected outcome.
+    - Keep assertions simple and focused on the defined scope.
+  </assert>
+</aaa_implementation>
+
+<instructions>
+  ARRANGE: All preconditions and data.
+  ACT: Invoke the code unit (even if it doesn't exist yet in TDD).
+  ASSERT: The result is what you expect.
+  VALIDATE: In the TDD scenario, confirm this test fails because the implementation is missing (This is the "Red" step). In the legacy scenario, run the test to see if it passes or fails.
+</instructions>
+
+</step>
+
+</process_flow>
+
+---
+
+## Anti-Patterns: What to Avoid
+
+This is a master set of rules on what NOT to do. Refer to this list at every step.
+
+<avoid_list>
+
+  <anti_pattern name="Testing Implementation Details">
+    <description>Tests should not be coupled to the internal logic of a unit. Do not test private methods, internal state, or the specific "how" of an implementation. Focus only on the public API's inputs and outputs.</description>
+    <instruction>NEVER write assertions against private variables or call private methods directly from a test.</instruction>
+  </anti_pattern>
+
+  <anti_pattern name="Complex Logic in Tests">
+    <description>Tests should be simple, declarative, and immediately understandable. They are documentation.</description>
+    <instruction>AVOID loops, complex conditionals (if/else, switch), or any logic that could introduce a bug within the test itself.</instruction>
+  </anti_pattern>
+
+  <anti_pattern name="Relying on External Systems">
+    <description>Unit tests must be fast and deterministic. Dependencies on networks, databases, or file systems make them slow and unreliable.</description>
+    <instruction>NEVER make a real network request, database query, or file system read/write in a unit test. ALWAYS mock these dependencies.</instruction>
+  </anti_pattern>
+
+  <anti_pattern name="Multiple Concerns in One Test">
+    <description>A single test should validate a single, specific behavior or outcome. Combining multiple unrelated assertions makes failures ambiguous.</description>
+    <instruction>If a test fails, the reason should be obvious from its name. If you are testing two different things, write two different tests.</instruction>
+  </anti_pattern>
+
+  <anti_pattern name="Test Inter-dependency">
+    <description>Each test must be completely independent and capable of running on its own or in any order. State from one test should never affect another.</description>
+    <instruction>ALWAYS ensure test setup and teardown are handled within each individual test to guarantee isolation.</instruction>
+  </anti_pattern>
+
+</avoid_list>

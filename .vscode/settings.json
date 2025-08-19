@@ -19,9 +19,10 @@
     "net"
   ],
   "editor.wordWrap": "wordWrapColumn",
-  "editor.wordWrapColumn": 120,
+  "editor.wordWrapColumn": 100,
+  "editor.wrappingIndent": "indent",
   "editor.rulers": [
-    120
+    100
   ],
   "files.exclude": {
     "**/node_modules": true,
@@ -120,6 +121,16 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown]": {
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.wrappingIndent": "deepIndent"
+  },
+  "[mdx]": {
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.wrappingIndent": "deepIndent"
   },
   "search.useIgnoreFiles": true,
   "search.useGlobalIgnoreFiles": true,

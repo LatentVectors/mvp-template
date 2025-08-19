@@ -178,3 +178,52 @@ body {
     background-color 0.2s ease,
     color 0.2s ease;
 }
+
+/* Supabase Auth UI dark-mode alignment */
+.supabase-auth input[type='email'],
+.supabase-auth input[type='password'],
+.supabase-auth input[type='text'] {
+  background: var(--color-card);
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+}
+
+.dark .supabase-auth input[type='email'],
+.dark .supabase-auth input[type='password'],
+.dark .supabase-auth input[type='text'] {
+  background: var(--color-card);
+  color: var(--color-foreground);
+  border-color: var(--color-border);
+}
+
+.supabase-auth ::placeholder {
+  color: var(--color-muted-foreground);
+}
+
+.dark .supabase-auth ::placeholder {
+  color: var(--color-muted-foreground);
+}
+
+/* Improve Supabase Auth UI button contrast in both themes */
+.supabase-auth button[type='submit'],
+.supabase-auth button[data-button] {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  transition: background-color 0.15s ease;
+}
+
+.dark .supabase-auth button[type='submit'],
+.dark .supabase-auth button[data-button] {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.supabase-auth button[type='submit']:hover,
+.supabase-auth button[data-button]:hover {
+  background: #404040
+}
+
+.dark .supabase-auth button[type='submit']:hover,
+.dark .supabase-auth button[data-button]:hover {
+  background: #dfdfdf;
+}

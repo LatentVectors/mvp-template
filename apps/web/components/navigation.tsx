@@ -36,6 +36,10 @@ const navItems = [
     title: 'Contact',
     href: '/contact',
   },
+  {
+    title: 'Sign in',
+    href: '/auth',
+  },
 ]
 
 export function Navigation() {
