@@ -53,7 +53,9 @@
     "**/.yarn/cache": true,
     "**/.vercel": true,
     "**/supabase/.branches": true,
-    "**/supabase/.temp": true
+    "**/supabase/.temp": true,
+    "**/.contentlayer/**": true,
+    "**/tsconfig.tsbuildinfo": true
   },
   "files.watcherExclude": {
     "**/node_modules/**": true,
@@ -71,7 +73,10 @@
     "**/.swc/**": true,
     "**/.pnpm-store/**": true,
     "**/.yarn/cache/**": true,
-    "**/supabase/.temp/**": true
+    "**/supabase/.temp/**": true,
+    "**/.contentlayer/**": true,
+    "e2e/**/test-results/**": true,
+    "**/tsconfig.tsbuildinfo": true
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -105,9 +110,11 @@
     "**/.env": true,
     "**/.env.*": true,
     "**/supabase/.branches": true,
-    "**/supabase/.temp": true
+    "**/supabase/.temp": true,
+    "**/.contentlayer": true,
+    "e2e/**/test-results/**": true,
+    "**/tsconfig.tsbuildinfo": true
   },
-  "explorer.excludeGitIgnore": true,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {

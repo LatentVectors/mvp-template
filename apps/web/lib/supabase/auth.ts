@@ -43,8 +43,12 @@ export function computeRedirectForPath(args: {
   isAuthenticated: boolean
 }): string | null {
   const { pathname, search = '', isAuthenticated } = args
-  if (!isProtectedPath(pathname)) return null
-  if (isAuthenticated) return null
+  if (!isProtectedPath(pathname)) {
+    return null
+  }
+  if (isAuthenticated) {
+    return null
+  }
   return buildAuthRedirect(pathname, search)
 }
 
@@ -52,7 +56,9 @@ export function computeRedirectForPath(args: {
 export async function getServerSession(): Promise<Session | null> {
   const supabase = await createServerSupabaseClient()
   const { data, error } = await supabase.auth.getSession()
-  if (error) return null
+  if (error) {
+    return null
+  }
   return data.session
 }
 
@@ -66,7 +72,9 @@ export async function getServerUser(): Promise<User | null> {
 export async function getClientSession(): Promise<Session | null> {
   const client = await getBrowserClient()
   const { data, error } = await client.auth.getSession()
-  if (error) return null
+  if (error) {
+    return null
+  }
   return data.session
 }
 

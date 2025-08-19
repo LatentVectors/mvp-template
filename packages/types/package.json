@@ -10,16 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
-    },
-    "./database": {
-      "types": "./dist/database.d.ts",
-      "import": "./dist/database.js",
-      "require": "./dist/database.js"
-    },
-    "./supabase": {
-      "types": "./dist/supabase.d.ts",
-      "import": "./dist/supabase.js",
-      "require": "./dist/supabase.js"
     }
   },
   "files": [

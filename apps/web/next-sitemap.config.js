@@ -4,7 +4,7 @@ module.exports = {
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   exclude: ['/api/*', '/_next/*', '/404', '/500', '/admin/*', '/test/*'],
-  additionalPaths: async config => {
+  additionalPaths: async () => {
     try {
       // Import the built version from the next.js server build
       const { getAllPosts } = await import(
@@ -61,27 +61,41 @@ module.exports = {
 }
 
 function getPriorityForPath(path) {
-  if (path === '/') return 1.0
-  if (path === '/blog') return 0.9
-  if (path.startsWith('/blog/')) return 0.8
+  if (path === '/') {
+    return 1.0
+  }
+  if (path === '/blog') {
+    return 0.9
+  }
+  if (path.startsWith('/blog/')) {
+    return 0.8
+  }
   if (
     path.includes('/privacy') ||
     path.includes('/terms') ||
     path.includes('/cookies')
-  )
+  ) {
     return 0.6
+  }
   return 0.7
 }
 
 function getChangefreqForPath(path) {
-  if (path === '/') return 'daily'
-  if (path === '/blog') return 'daily'
-  if (path.startsWith('/blog/')) return 'weekly'
+  if (path === '/') {
+    return 'daily'
+  }
+  if (path === '/blog') {
+    return 'daily'
+  }
+  if (path.startsWith('/blog/')) {
+    return 'weekly'
+  }
   if (
     path.includes('/privacy') ||
     path.includes('/terms') ||
     path.includes('/cookies')
-  )
+  ) {
     return 'monthly'
+  }
   return 'weekly'
 }

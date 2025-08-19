@@ -4,155 +4,123 @@ Shared TypeScript types for the MVP template monorepo.
 
 ## Overview
 
-This package provides type-safe interfaces for:
+This package provides a centralized location for all shared types used across the monorepo, including:
 
-- **Database schema types** (auto-generated from Supabase)
-- **Supabase client types**
-- **Common utility types**
-- **API response types**
+- **Auto-generated Supabase database types** - Generated from your database schema
+- **Common utility types** - Shared interfaces and types used across apps
+- **Database helper types** - Convenience types and complex query interfaces
+
+## Structure
+
+```
+src/
+├── index.ts              # Main entry point - exports everything
+├── generated/
+│   └── supabase.ts      # Auto-generated from Supabase CLI (never edit)
+├── common.ts             # Common utility types
+└── helpers.ts            # Database helper types and utilities
+```
 
 ## Usage
 
-```typescript
-import type { Database, Profile, Subscription, UsageCounter } from '@repo/types'
+### Basic Import
 
-// Use the types in your code
-const user: Profile = {
-  id: 'user-id',
-  email: 'user@example.com',
-  created_at: '2023-01-01T00:00:00Z',
-  updated_at: '2023-01-01T00:00:00Z',
+```typescript
+import type { Database, Profile, User } from '@repo/types'
+```
+
+### Database Types
+
+```typescript
+import type { Database } from '@repo/types'
+
+// Use the generated types directly
+type Profile = Database['public']['Tables']['profiles']['Row']
+type ProfileInsert = Database['public']['Tables']['profiles']['Insert']
+```
+
+### Helper Types
+
+```typescript
+import type { Profile, ProfileWithSubscription } from '@repo/types'
+
+// Use convenience types
+const profile: Profile = {
+  /* ... */
+}
+const profileWithSub: ProfileWithSubscription = {
+  /* ... */
 }
 ```
 
-## Development Workflow
+### Supabase Client
 
-### ⚠️ Important: Generated Types
+```typescript
+import type { TypedSupabaseClient } from '@repo/types'
+import { createClient } from '@supabase/supabase-js'
 
-The database types are **automatically generated** from your Supabase schema and should **never be
-edited manually**.
-
-### Setup for New Developers
-
-1. **Clone the repository**
-2. **Install dependencies**: `npm install`
-3. **Start Supabase locally**: `npm run db:start`
-4. **Generate types**: `npm run typegen:supabase`
-5. **Build types package**: `cd packages/types && npm run build`
-
-### When Database Schema Changes
-
-After updating migration files:
-
-```bash
-# Apply migrations
-npm run db:reset
-
-# Regenerate types
-npm run typegen:supabase
+const supabase: TypedSupabaseClient = createClient(url, key)
 ```
 
-### Generated Files
+## Development
 
-These files are **automatically generated** and excluded from git:
+### Regenerating Types
 
-- `src/generated/supabase.ts` - Database schema types
-- `dist/` - Compiled JavaScript output
+When you make database schema changes:
 
-### CI/CD Pipeline
+1. Start your local Supabase instance: `npm run db:start`
+2. Run the type generation: `npm run typegen:supabase`
 
-Your CI/CD should:
+This will:
 
-1. Start Supabase services
-2. Run `npm run typegen:supabase`
-3. Build the types package
-4. Build/deploy applications
+- Generate new types from your current database schema
+- Update the types package exports
+- Build the package with the new types
 
-## File Structure
+### Adding New Types
 
-```
-packages/types/
-├── src/
-│   ├── generated/          # Auto-generated (gitignored)
-│   │   └── supabase.ts     # Generated database types
-│   ├── common.ts           # Utility types
-│   ├── database.ts         # Database helpers (imports generated)
-│   ├── supabase.ts         # Supabase client types
-│   └── index.ts            # Main exports
-├── dist/                   # Compiled output (gitignored)
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## Type Safety
-
-This package ensures type safety across the entire monorepo by:
-
-- **Generating exact types** from database schema
-- **Providing branded types** for better type safety
-- **Exporting utility types** for common patterns
-- **Maintaining consistency** across all applications
-
-## Scripts
-
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm run dev` - Watch mode compilation
-- `npm run clean` - Remove compiled output
-- `npm run type-check` - Type checking without compilation
-
-## Adding New Types
-
-### For Database Changes
-
-1. Create migration files in `supabase/migrations/`
-2. Apply migrations: `npm run db:reset`
-3. Regenerate types: `npm run typegen:supabase`
-
-### For Application Types
-
-Add them to the appropriate file:
-
-- `common.ts` - Shared utility types
-- `supabase.ts` - Supabase-specific types
-- Create new files as needed and export from `index.ts`
+- **Generated types**: Never edit `src/generated/supabase.ts` - it's auto-generated
+- **Helper types**: Add to `src/helpers.ts` for database-related utilities
+- **Common types**: Add to `src/common.ts` for general-purpose types
+- **Supabase types**: Add to `src/supabase.ts` for Supabase-specific functionality
 
 ## Best Practices
 
-### ✅ Do
+1. **Import from the main package**: `import type { ... } from '@repo/types'`
+2. **Use generated types directly**: Access the `Database` type for full type safety
+3. **Extend, don't modify**: Create new types that extend generated ones
+4. **Keep it simple**: Avoid complex re-export chains
 
-- Use generated types for all database operations
-- Create helper types that extend generated types
-- Use branded types for IDs and sensitive data
-- Document complex type utilities
+## Migration from Old Structure
 
-### ❌ Don't
+The old structure had redundant re-exports and multiple entry points. The new structure:
 
-- Edit generated files manually
-- Commit generated files to git
-- Create duplicate types for database objects
-- Use `any` or loose typing
+- ✅ Single source of truth for generated types
+- ✅ Clear separation of concerns
+- ✅ No duplicate exports
+- ✅ Simpler import paths
+- ✅ Easier maintenance
 
 ## Troubleshooting
 
-### "Cannot find module './generated/supabase'"
+### Build Errors
 
-Run the type generation:
+If you get build errors after regenerating types:
 
-```bash
-npm run typegen:supabase
-```
+1. Clean the dist folder: `npm run clean`
+2. Rebuild: `npm run build`
 
-### "Supabase CLI not found"
+### Type Conflicts
 
-Install Supabase CLI:
+If you see duplicate export errors:
 
-```bash
-npm install -g supabase
-```
+1. Check that you're not re-exporting types that already exist in generated files
+2. Use explicit imports instead of wildcard exports when needed
 
-### Build Errors After Schema Changes
+### Missing Types
 
-1. Reset database: `npm run db:reset`
-2. Regenerate types: `npm run typegen:supabase`
-3. Rebuild package: `npm run build`
+If types aren't available:
+
+1. Regenerate types: `npm run typegen:supabase`
+2. Check that the types package is built: `npm run build`
+3. Verify your database schema changes are reflected in the generated types
