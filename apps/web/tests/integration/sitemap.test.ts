@@ -5,7 +5,7 @@ const sitemapConfig = require('../../next-sitemap.config.js')
 import { GET as getRobots } from '@/app/(public)/robots.txt/route'
 import { NextRequest } from 'next/server'
 
-describe('Sitemap and Robots configuration', () => {
+describe('Sitemap and Robots configuration (integration)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })

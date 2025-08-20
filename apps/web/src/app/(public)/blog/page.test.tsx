@@ -6,7 +6,14 @@ import BlogPage from '@/app/(public)/blog/page'
 
 // Mock next/link for testing
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }: any) => (
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode
+    href: string
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -31,10 +38,12 @@ const mockPosts = [
     type: 'Post',
     published: true,
     slug: 'test-post-1',
+    slugAsParams: 'test-post-1',
     title: 'Test Post 1',
     description: 'Description for test post 1',
+    excerpt: 'Description for test post 1',
     date: '2024-01-01',
-    readingTime: 5,
+    readingTime: '5 min read',
     url: '/blog/test-post-1',
     tags: ['react', 'typescript'],
     body: { code: '', raw: '' },
@@ -45,15 +54,17 @@ const mockPosts = [
     type: 'Post',
     published: true,
     slug: 'test-post-2',
+    slugAsParams: 'test-post-2',
     title: 'Test Post 2',
     description: 'Description for test post 2',
+    excerpt: 'Description for test post 2',
     date: '2024-01-02',
-    readingTime: 3,
+    readingTime: '3 min read',
     url: '/blog/test-post-2',
     tags: ['nextjs'],
     body: { code: '', raw: '' },
   },
-] as any[]
+] as unknown as ReturnType<typeof getAllPosts>
 
 describe('Blog Index Page', () => {
   beforeEach(() => {

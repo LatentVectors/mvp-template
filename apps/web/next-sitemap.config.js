@@ -10,10 +10,18 @@ module.exports = {
       const { getAllPosts } = await import(
         './.next/server/chunks/lib/content-utils.js'
       ).catch(async () => {
-        // Fallback: use dynamic import during build time
-        const contentlayer = await import('contentlayer2/generated')
-        const posts = contentlayer.allPosts || []
-        return { getAllPosts: () => posts }
+        // Fallback: load directly from contentlayer build output
+        try {
+          const { allPosts } = await import(
+            './.contentlayer/generated/index.mjs'
+          )
+          return { getAllPosts: () => allPosts || [] }
+        } catch {
+          const { allPosts } = await import(
+            './.contentlayer/generated/index.js'
+          )
+          return { getAllPosts: () => allPosts || [] }
+        }
       })
       const posts = getAllPosts()
 

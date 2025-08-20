@@ -12,7 +12,14 @@ vi.mock('next/navigation', () => ({
 
 // Mock next/link for testing
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }: any) => (
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode
+    href: string
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -38,8 +45,13 @@ vi.mock('@/components/blog/mdx-content', () => ({
   ),
 }))
 
+type MockNavProps = {
+  previousPost?: { slug: string; title: string; url: string } | null
+  nextPost?: { slug: string; title: string; url: string } | null
+}
+
 vi.mock('@/components/blog/post-navigation', () => ({
-  PostNavigation: ({ previousPost, nextPost }: any) => (
+  PostNavigation: ({ previousPost, nextPost }: MockNavProps) => (
     <div data-testid="post-navigation">
       {previousPost && <span>Previous: {previousPost.title}</span>}
       {nextPost && <span>Next: {nextPost.title}</span>}
@@ -53,17 +65,19 @@ const mockPost = {
   type: 'Post',
   published: true,
   slug: 'test-post',
+  slugAsParams: 'test-post',
   title: 'Test Post Title',
   description: 'Test post description',
+  excerpt: 'Test post description',
   date: '2024-01-01',
-  readingTime: 5,
+  readingTime: '5 min read',
   url: '/blog/test-post',
   tags: ['react', 'typescript'],
   body: {
     code: 'Mock MDX content',
     raw: '',
   },
-} as any
+} as unknown as NonNullable<ReturnType<typeof getPostBySlug>>
 
 const mockAdjacentPosts = {
   previousPost: {
@@ -142,7 +156,7 @@ describe('Blog Post Page', () => {
     // Since notFound() throws, we need to handle it
     try {
       await BlogPostPage({ params })
-    } catch (error) {
+    } catch (_error) {
       // Expected to throw
     }
 

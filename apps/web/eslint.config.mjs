@@ -16,7 +16,7 @@ const eslintConfig = [
       // TypeScript-specific rules (use standard ESLint rules where possible)
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_', caughtErrors: 'all', caughtErrorsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
 
@@ -33,6 +33,14 @@ const eslintConfig = [
       'no-var': 'error',
       'no-console': 'warn',
       eqeqeq: ['error', 'always'],
+    },
+  },
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    rules: {
+      // Tests often include strings with quotes and code snippets
+      'react/no-unescaped-entities': 'off',
+      'react/jsx-curly-brace-presence': 'off',
     },
   },
 ]

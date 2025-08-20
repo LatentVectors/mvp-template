@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GET } from '@/app/api/og/route'
+import { GET } from './route'
 import { NextRequest } from 'next/server'
 
 describe('Open Graph Image Route', () => {

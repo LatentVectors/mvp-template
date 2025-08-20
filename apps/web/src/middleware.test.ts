@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { NextRequest } from 'next/server'
 
-let currentUser: any = null
+let currentUser: { id: string } | null = null
 vi.mock('@supabase/ssr', () => ({
   createServerClient: () => ({
     auth: {
@@ -26,24 +26,24 @@ describe('middleware', () => {
 
   it('redirects unauthenticated user from protected route', async () => {
     currentUser = null
-    const { middleware } = await import('@/middleware')
-    const req = createRequest('/app')
+    const { middleware } = await import('./middleware')
+    const req = createRequest('/dashboard')
     const res = await middleware(req)
     expect(res.status).toBe(307)
-    expect(res.headers.get('location')).toContain('/auth?returnTo=%2Fapp')
+    expect(res.headers.get('location')).toContain('/auth?returnTo=%2Fdashboard')
   })
 
   it('allows authenticated user through', async () => {
     currentUser = { id: 'u1' }
-    const { middleware } = await import('@/middleware')
-    const req = createRequest('/app')
+    const { middleware } = await import('./middleware')
+    const req = createRequest('/dashboard')
     const res = await middleware(req)
     expect(res.status).toBe(200)
   })
 
   it('does not affect marketing/public routes', async () => {
     currentUser = null
-    const { middleware } = await import('@/middleware')
+    const { middleware } = await import('./middleware')
     const req = createRequest('/')
     const res = await middleware(req)
     expect(res.status).toBe(200)

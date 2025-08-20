@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, 'src'),
         '.contentlayer/generated': path.resolve(
           __dirname,
           'tests/fixtures/contentlayer-generated.ts'
