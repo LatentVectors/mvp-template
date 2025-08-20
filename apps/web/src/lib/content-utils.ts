@@ -2,7 +2,7 @@
  * Content processing utilities for blog posts and other content
  */
 
-import { allPosts } from '.contentlayer/generated'
+import { allPosts } from '../../.contentlayer/generated'
 
 export interface ContentItem {
   title: string

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import AuthPage from '@/app/(marketing)/auth/page'
+import AuthPage from '@/app/(public)/auth/page'
 
 // Mock out the heavy Auth UI to avoid nested React versions/hooks
 vi.mock('@supabase/auth-ui-react', () => ({

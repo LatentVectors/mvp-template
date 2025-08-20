@@ -26,7 +26,9 @@ describe('Legal Pages', () => {
   describe('Privacy Policy Page', () => {
     it('renders privacy policy content with proper structure', async () => {
       // Import and render Privacy Policy page
-      const { default: PrivacyPage } = await import('@/app/privacy/page')
+      const { default: PrivacyPage } = await import(
+        '@/app/(public)/legal/[slug]/page'
+      )
       render(<PrivacyPage />)
 
       // Check for main heading
@@ -58,7 +60,7 @@ describe('Legal Pages', () => {
     })
 
     it('has proper metadata for SEO', async () => {
-      const { metadata } = await import('@/app/privacy/page')
+      const { metadata } = await import('@/app/(public)/legal/[slug]/page')
 
       expect(metadata.title).toContain('Privacy Policy')
       expect(metadata.description).toBeTruthy()
@@ -71,7 +73,9 @@ describe('Legal Pages', () => {
   describe('Terms of Service Page', () => {
     it('renders terms of service content with proper structure', async () => {
       // Import and render Terms of Service page
-      const { default: TermsPage } = await import('@/app/terms/page')
+      const { default: TermsPage } = await import(
+        '@/app/(public)/legal/[slug]/page'
+      )
       render(<TermsPage />)
 
       // Check for main heading
@@ -95,7 +99,7 @@ describe('Legal Pages', () => {
     })
 
     it('has proper metadata for SEO', async () => {
-      const { metadata } = await import('@/app/terms/page')
+      const { metadata } = await import('@/app/(public)/legal/[slug]/page')
 
       expect(metadata.title).toContain('Terms of Service')
       expect(metadata.description).toBeTruthy()
@@ -108,7 +112,9 @@ describe('Legal Pages', () => {
   describe('Cookie Policy Page', () => {
     it('renders cookie policy content with proper structure', async () => {
       // Import and render Cookie Policy page
-      const { default: CookiePage } = await import('@/app/cookies/page')
+      const { default: CookiePage } = await import(
+        '@/app/(public)/legal/[slug]/page'
+      )
       render(<CookiePage />)
 
       // Check for main heading
@@ -140,7 +146,7 @@ describe('Legal Pages', () => {
     })
 
     it('has proper metadata for SEO', async () => {
-      const { metadata } = await import('@/app/cookies/page')
+      const { metadata } = await import('@/app/(public)/legal/[slug]/page')
 
       expect(metadata.title).toContain('Cookie Policy')
       expect(metadata.description).toBeTruthy()
@@ -170,9 +176,9 @@ describe('Legal Pages', () => {
   describe('Consistent Styling', () => {
     it('all legal pages use consistent styling classes', async () => {
       const pages = [
-        await import('@/app/privacy/page'),
-        await import('@/app/terms/page'),
-        await import('@/app/cookies/page'),
+        await import('@/app/(public)/legal/[slug]/page'),
+        await import('@/app/(public)/legal/[slug]/page'),
+        await import('@/app/(public)/legal/[slug]/page'),
       ]
 
       for (const page of pages) {

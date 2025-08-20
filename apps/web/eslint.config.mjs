@@ -33,7 +33,6 @@ const eslintConfig = [
       'no-var': 'error',
       'no-console': 'warn',
       eqeqeq: ['error', 'always'],
-      curly: ['error', 'all'],
     },
   },
 ]

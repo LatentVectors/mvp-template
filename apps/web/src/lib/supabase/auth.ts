@@ -20,7 +20,7 @@ import { createClient as createServerSupabaseClient } from '@/lib/supabase/serve
  * URL path prefixes that require authentication.
  * Adjust as your protected app grows (e.g., add '/dashboard').
  */
-export const PROTECTED_PATH_PREFIXES = ['/app']
+export const PROTECTED_PATH_PREFIXES = ['/dashboard']
 
 export function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PATH_PREFIXES.some(

@@ -1,7 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://mvp-template.vercel.app',
-  generateRobotsTxt: true,
+  generateRobotsTxt: false,
   generateIndexSitemap: false,
   exclude: ['/api/*', '/_next/*', '/404', '/500', '/admin/*', '/test/*'],
   additionalPaths: async () => {

@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { getAllPosts } from '@/lib/content-utils'
-import BlogPage from '@/app/blog/page'
+import BlogPage from '@/app/(public)/blog/page'
 
 // Mock next/link for testing
 vi.mock('next/link', () => ({

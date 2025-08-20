@@ -2,7 +2,7 @@ import React from 'react'
 import { getServerUser } from '@/lib/supabase/auth'
 import { logout } from './actions'
 
-export default async function AppLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode

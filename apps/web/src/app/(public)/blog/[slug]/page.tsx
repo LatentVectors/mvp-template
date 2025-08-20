@@ -133,7 +133,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                <span>{post.readingTime} min read</span>
+                <span>
+                  {typeof post.readingTime === 'string'
+                    ? post.readingTime
+                    : `${post.readingTime} min read`}
+                </span>
               </div>
             </div>
 

@@ -29,13 +29,13 @@ function AuthForm() {
         return
       }
       if (data.session) {
-        router.replace((returnTo || '/app') as never)
+        router.replace((returnTo || '/dashboard') as never)
       }
     }
     run()
     const { data: sub } = supabase.auth.onAuthStateChange(event => {
       if (event === 'SIGNED_IN') {
-        router.replace((returnTo || '/app') as never)
+        router.replace((returnTo || '/dashboard') as never)
       }
     })
     return () => {

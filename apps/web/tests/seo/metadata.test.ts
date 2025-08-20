@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { generateMetadata } from '@/app/blog/[slug]/page'
-import { metadata as blogIndexMetadata } from '@/app/blog/page'
+import { generateMetadata } from '@/app/(public)/blog/[slug]/page'
+import { metadata as blogIndexMetadata } from '@/app/(public)/blog/page'
 
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),

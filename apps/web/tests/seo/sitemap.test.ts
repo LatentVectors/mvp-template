@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 // next-sitemap config is CommonJS; import via require to avoid ESM analysis in Vitest
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sitemapConfig = require('../../next-sitemap.config.js')
-import { GET as getRobots } from '@/app/robots.txt/route'
+import { GET as getRobots } from '@/app/(public)/robots.txt/route'
 import { NextRequest } from 'next/server'
 
 describe('Sitemap and Robots configuration', () => {

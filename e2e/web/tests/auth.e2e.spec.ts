@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-// This test covers: login -> redirect to /app dashboard -> logout -> back to landing
+// This test covers: login -> redirect to /dashboard -> logout -> back to landing
 test("login → dashboard → logout", async ({ page }) => {
   await page.goto("/auth");
 
@@ -24,7 +24,7 @@ test("login → dashboard → logout", async ({ page }) => {
   // Ensure no auth cookies persist before visiting a protected route
   await page.context().clearCookies();
 
-  // If we try to visit /app now, middleware should redirect to auth
-  await page.goto("/app");
+  // If we try to visit /dashboard now, middleware should redirect to auth
+  await page.goto("/dashboard");
   await page.waitForURL("**/auth**");
 });

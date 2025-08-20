@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import AuthPage from '@/app/(marketing)/auth/page'
+import AuthPage from '@/app/(public)/auth/page'
 
 vi.mock('next/navigation', () => {
   return {

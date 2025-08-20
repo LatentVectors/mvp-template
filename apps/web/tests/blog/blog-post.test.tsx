@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { notFound } from 'next/navigation'
 import { getPostBySlug, getAdjacentPosts } from '@/lib/content-utils'
-import BlogPostPage from '@/app/blog/[slug]/page'
+import BlogPostPage from '@/app/(public)/blog/[slug]/page'
 
 // Mock next/navigation
 vi.mock('next/navigation', () => ({

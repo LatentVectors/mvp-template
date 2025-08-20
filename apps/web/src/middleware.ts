@@ -45,5 +45,5 @@ export async function middleware(request: NextRequest) {
 
 // Run on protected app routes only. Adjust as needed.
 export const config = {
-  matcher: ['/app/:path*'],
+  matcher: ['/dashboard/:path*'],
 }
