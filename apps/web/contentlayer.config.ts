@@ -1,7 +1,7 @@
 import {
+  type ComputedFields,
   defineDocumentType,
   makeSource,
-  type ComputedFields,
 } from 'contentlayer2/source-files'
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from 'rehype-slug'
@@ -128,9 +128,43 @@ export const Post = defineDocumentType(() => ({
   computedFields,
 }))
 
+export const LegalPage = defineDocumentType(() => ({
+  name: 'LegalPage',
+  filePathPattern: `legal/**/*.md`,
+  contentType: 'markdown',
+  fields: {
+    title: {
+      type: 'string',
+      description: 'The title of the legal page',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: 'A brief description of the legal page',
+      required: false,
+    },
+    lastUpdated: {
+      type: 'date',
+      description: 'When the legal page was last updated',
+      required: true,
+    },
+    slug: {
+      type: 'string',
+      description: 'The URL slug for the page',
+      required: true,
+    },
+  },
+  computedFields: {
+    url: {
+      type: 'string',
+      resolve: (doc: any) => `/${doc.slug}`,
+    },
+  },
+}))
+
 export default makeSource({
   contentDirPath: './content',
-  documentTypes: [Post],
+  documentTypes: [Post, LegalPage],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
