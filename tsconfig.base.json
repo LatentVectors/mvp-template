@@ -35,7 +35,9 @@
       "~/*": ["./src/*"],
       "@/*": ["./src/*"],
       "@repo/types": ["./packages/types/src"],
-      "@repo/types/*": ["./packages/types/src/*"]
+      "@repo/types/*": ["./packages/types/src/*"],
+      "@repo/payments": ["./packages/interfaces/payments/src"],
+      "@repo/payments/*": ["./packages/interfaces/payments/src/*"]
     }
   },
   "exclude": ["node_modules", "dist", "build", ".next", ".turbo", "coverage"]

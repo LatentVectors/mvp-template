@@ -24,6 +24,23 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
+        'server-only': path.resolve(__dirname, 'tests/fixtures/server-only.ts'),
+        '@repo/payments': path.resolve(
+          __dirname,
+          '../../packages/interfaces/payments/src'
+        ),
+        '@repo/interfaces-storage': path.resolve(
+          __dirname,
+          '../../packages/interfaces/storage/src'
+        ),
+        '@repo/email': path.resolve(
+          __dirname,
+          '../../packages/interfaces/email/src'
+        ),
+        'lemonsqueezy.ts': path.resolve(
+          __dirname,
+          'tests/fixtures/lemonsqueezy.mock.ts'
+        ),
         '.contentlayer/generated': path.resolve(
           __dirname,
           'tests/fixtures/contentlayer-generated.ts'

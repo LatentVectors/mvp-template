@@ -28,7 +28,7 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*",
+    "packages/**",
     "infra/*",
     "e2e/*"
   ],

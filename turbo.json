@@ -1,116 +1,73 @@
 {
-    "$schema": "https://turborepo.com/schema.json",
-    "ui": "tui",
-    "globalEnv": [
-        "NODE_ENV",
-        "CI"
-    ],
-    "globalPassThroughEnv": [
-        "VERCEL_URL",
-        "VERCEL_ENV"
-    ],
-    "tasks": {
-        "build": {
-            "dependsOn": [
-                "^build"
-            ],
-            "inputs": [
-                "$TURBO_DEFAULT$",
-                ".env*"
-            ],
-            "outputs": [
-                ".next/**",
-                "!.next/cache/**",
-                "dist/**",
-                "build/**"
-            ]
-        },
-        "dev": {
-            "cache": false,
-            "persistent": true,
-            "dependsOn": [
-                "^build"
-            ]
-        },
-        "lint": {
-            "dependsOn": [
-                "^build"
-            ],
-            "outputs": []
-        },
-        "lint:fix": {
-            "dependsOn": [
-                "^build"
-            ],
-            "cache": false
-        },
-        "format": {
-            "outputs": [],
-            "cache": false
-        },
-        "type-check": {
-            "dependsOn": [
-                "^build"
-            ],
-            "inputs": [
-                "**/*.{ts,tsx}",
-                "tsconfig.json"
-            ],
-            "outputs": []
-        },
-        "test": {
-            "dependsOn": [
-                "^build"
-            ],
-            "inputs": [
-                "src/**/*.{ts,tsx}",
-                "test/**/*.{ts,tsx}",
-                "**/*.test.{ts,tsx}"
-            ],
-            "outputs": [
-                "coverage/**"
-            ]
-        },
-        "test:watch": {
-            "cache": false,
-            "persistent": true
-        },
-        "test:run": {
-            "dependsOn": [
-                "^build"
-            ],
-            "inputs": [
-                "src/**/*.{ts,tsx}",
-                "test/**/*.{ts,tsx}",
-                "**/*.test.{ts,tsx}"
-            ],
-            "outputs": [
-                "coverage/**"
-            ]
-        },
-        "clean": {
-            "cache": false
-        },
-        "db:migrate": {
-            "cache": false,
-            "inputs": [
-                "supabase/migrations/**"
-            ]
-        },
-        "db:generate": {
-            "cache": false,
-            "inputs": [
-                "supabase/schema.sql"
-            ]
-        },
-        "deploy": {
-            "dependsOn": [
-                "build",
-                "lint",
-                "type-check",
-                "test"
-            ],
-            "cache": false
-        }
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "globalEnv": ["NODE_ENV", "CI"],
+  "globalPassThroughEnv": ["VERCEL_URL", "VERCEL_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "format": {
+      "outputs": [],
+      "cache": false
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "inputs": ["**/*.{ts,tsx}", "tsconfig.json"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "tests/**/*.{ts,tsx}",
+        "**/*.test.{ts,tsx}"
+      ],
+      "outputs": ["coverage/**"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:run": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "**/*.test.{ts,tsx}"
+      ],
+      "outputs": ["coverage/**"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "inputs": ["supabase/migrations/**"]
+    },
+    "db:generate": {
+      "cache": false,
+      "inputs": ["supabase/schema.sql"]
+    },
+    "deploy": {
+      "dependsOn": ["build", "lint", "type-check", "test"],
+      "cache": false
     }
+  }
 }

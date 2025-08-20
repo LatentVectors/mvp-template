@@ -1,0 +1,43 @@
+{
+  "name": "@repo/email",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Email port and adapters for the MVP template",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -w -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit -p tsconfig.json",
+    "lint": "echo 'No lint configured for @repo/email'",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "keywords": [
+    "email",
+    "ports",
+    "adapters",
+    "resend"
+  ],
+  "author": "LatentVectors",
+  "license": "MIT",
+  "dependencies": {
+    "resend": "^3.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  }
+}
