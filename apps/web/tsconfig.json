@@ -16,6 +16,7 @@
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "types": ["vitest/globals"],
     "plugins": [
       {
         "name": "next"

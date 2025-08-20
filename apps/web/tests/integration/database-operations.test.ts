@@ -18,7 +18,7 @@ import type {
   UsageCounter,
   UsageCounterInsert,
   UsageCounterUpdate,
-} from '@repo/types/database'
+} from '@repo/types'
 
 describe('Database Operations with Generated Types', () => {
   let supabase: ReturnType<typeof createServiceRoleClient>

@@ -1,14 +1,16 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Calendar, Clock, ArrowRight } from 'lucide-react'
+import { ArrowRight, Calendar, Clock } from 'lucide-react'
 import { getAllPosts } from '@/lib/content-utils'
 import { formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-export const metadata: Metadata = {
+import { pageMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = pageMetadata({
   title: 'Blog',
   description:
     'Latest articles, tutorials, and insights from our team. Discover guides, best practices, and tutorials about modern web development.',
@@ -21,48 +23,8 @@ export const metadata: Metadata = {
     'React',
     'TypeScript',
   ],
-  authors: [{ name: 'MVP Template Team' }],
-  creator: 'MVP Template',
-  publisher: 'MVP Template',
-  alternates: {
-    canonical: '/blog',
-  },
-  openGraph: {
-    title: 'Blog - MVP Template',
-    description:
-      'Latest articles, tutorials, and insights from our team. Discover guides, best practices, and tutorials about modern web development.',
-    type: 'website',
-    url: '/blog',
-    siteName: 'MVP Template',
-    images: [
-      {
-        url: '/api/og?title=Blog&type=page',
-        width: 1200,
-        height: 630,
-        alt: 'MVP Template Blog',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Blog - MVP Template',
-    description:
-      'Latest articles, tutorials, and insights from our team. Discover guides, best practices, and tutorials about modern web development.',
-    images: ['/api/og?title=Blog&type=page'],
-    creator: '@mvptemplate',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-}
+  pathname: '/blog',
+})
 
 export default function BlogPage() {
   const posts = getAllPosts()

@@ -9,7 +9,8 @@ import {
 } from '@/lib/supabase/auth'
 
 vi.mock('@/lib/supabase/client', async importOriginal => {
-  const actual = await importOriginal()
+  const actual =
+    (await importOriginal()) as typeof import('@/lib/supabase/client')
   return {
     ...actual,
     supabase: {

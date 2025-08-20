@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
 import { Navigation } from '@/components/navigation'
 
 describe('Navigation auth link', () => {
@@ -11,8 +10,6 @@ describe('Navigation auth link', () => {
 })
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { Navigation } from '@/components/navigation'
 
 describe('Navigation', () => {
   test('has Sign in link to /auth', () => {

@@ -1,12 +1,13 @@
 import React from 'react'
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import {
+  getAdjacentPosts,
   getAllPosts,
   getPostBySlug,
-  getAdjacentPosts,
 } from '@/lib/content-utils'
 import { formatDate } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -52,52 +53,23 @@ export async function generateMetadata({
     post.excerpt ||
     `Read ${post.title} on MVP Template blog`
 
-  return {
+  const baseMeta = pageMetadata({
     title: post.title,
     description,
-    keywords: [...(post.tags || []), 'blog', 'tutorial', 'web development'],
-    authors: [{ name: 'MVP Template Team' }],
-    creator: 'MVP Template',
-    publisher: 'MVP Template',
-    alternates: {
-      canonical: post.url,
-    },
+    pathname: post.url as `/${string}`,
+    ...(post.tags && post.tags.length ? { keywords: post.tags } : {}),
+    imageType: 'post',
+    imageTitle: post.title,
+  })
+
+  return {
+    ...baseMeta,
     openGraph: {
-      title: post.title,
-      description,
+      ...baseMeta.openGraph,
       type: 'article',
       publishedTime: new Date(post.date).toISOString(),
       modifiedTime: new Date(post.date).toISOString(),
-      url: post.url,
-      siteName: 'MVP Template',
-      authors: ['MVP Template Team'],
       tags: post.tags,
-      images: [
-        {
-          url: `/api/og?title=${encodeURIComponent(post.title)}&type=blog`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description,
-      images: [`/api/og?title=${encodeURIComponent(post.title)}&type=blog`],
-      creator: '@mvptemplate',
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
     },
   }
 }
