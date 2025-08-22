@@ -26,7 +26,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "lemonsqueezy.ts": "^6.0.0"
+    "@lemonsqueezy/lemonsqueezy.js": "^1.0.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

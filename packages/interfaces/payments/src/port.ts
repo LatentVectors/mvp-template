@@ -13,6 +13,10 @@ export type CreateCheckoutResult = {
   url: string
 }
 
+export enum PaymentsProvider {
+  LemonSqueezy = 'lemonsqueezy',
+}
+
 export interface PaymentPort {
   createCheckout(input: CreateCheckoutInput): Promise<CreateCheckoutResult>
   verifyWebhook(payload: {

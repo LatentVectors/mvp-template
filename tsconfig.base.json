@@ -36,6 +36,10 @@
       "@/*": ["./src/*"],
       "@repo/types": ["./packages/types/src"],
       "@repo/types/*": ["./packages/types/src/*"],
+      "@repo/email": ["./packages/interfaces/email/src"],
+      "@repo/email/*": ["./packages/interfaces/email/src/*"],
+      "@repo/interfaces-storage": ["./packages/interfaces/storage/src"],
+      "@repo/interfaces-storage/*": ["./packages/interfaces/storage/src/*"],
       "@repo/payments": ["./packages/interfaces/payments/src"],
       "@repo/payments/*": ["./packages/interfaces/payments/src/*"]
     }

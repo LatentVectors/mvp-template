@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import type { EmailPort, SendEmailRequest, SendEmailResponse } from "./port";
+import { EmailProvider } from "./port";
 
 export class ResendEmail implements EmailPort {
   private readonly client: Resend | null;
@@ -46,7 +47,7 @@ export class ResendEmail implements EmailPort {
       }
 
       const id = (data as any)?.id ?? "";
-      return { ok: true, id, provider: "resend" };
+      return { ok: true, id, provider: EmailProvider.Resend };
     } catch (err: any) {
       return { ok: false, error: err?.message ?? String(err) };
     }

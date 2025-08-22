@@ -1,12 +1,11 @@
 import 'server-only'
-import { LemonSqueezyPayments } from '@repo/payments'
-
-export type PaymentsProvider = 'lemonsqueezy'
+import { LemonSqueezyPayments, PaymentsProvider } from '@repo/payments'
 
 export function getPayments() {
-  const provider = (process.env.PAYMENTS_PROVIDER ||
-    'lemonsqueezy') as PaymentsProvider
-  if (provider === 'lemonsqueezy') {
+  const provider =
+    (process.env.PAYMENTS_PROVIDER as PaymentsProvider) ||
+    PaymentsProvider.LemonSqueezy
+  if (provider === PaymentsProvider.LemonSqueezy) {
     const apiKey = process.env.LEMONSQUEEZY_API_KEY || ''
     return new LemonSqueezyPayments({ apiKey })
   }

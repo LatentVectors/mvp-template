@@ -27,6 +27,10 @@ export type StorageGetUrlResult = {
   url: string
 }
 
+export enum StorageProvider {
+  Supabase = 'supabase',
+}
+
 export interface StoragePort {
   upload(input: StorageUploadInput): Promise<StorageUploadResult>
   getUrl(input: StorageGetUrlInput): Promise<StorageGetUrlResult>

@@ -1,7 +1,7 @@
 import { type PaymentPort, type CreateCheckoutInput, type CreateCheckoutResult } from './port'
 
-// Using official lemonsqueezy.ts SDK
-import { LemonSqueezy, isValidSignature, type WebhookEvent } from 'lemonsqueezy.ts'
+// Using official Lemon Squeezy SDK
+import { LemonSqueezy, isValidSignature } from '@lemonsqueezy/lemonsqueezy.js'
 
 export class LemonSqueezyPayments implements PaymentPort {
   private client: LemonSqueezy

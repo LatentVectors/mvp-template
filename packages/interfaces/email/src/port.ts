@@ -10,8 +10,12 @@ export type SendEmailRequest = {
 };
 
 export type SendEmailResponse =
-  | { ok: true; id: string; provider: "resend" | "mock" }
+  | { ok: true; id: string; provider: EmailProvider | "mock" }
   | { ok: false; error: string; recoverable?: boolean };
+
+export enum EmailProvider {
+  Resend = "resend",
+}
 
 export interface EmailPort {
   send(request: SendEmailRequest): Promise<SendEmailResponse>;
