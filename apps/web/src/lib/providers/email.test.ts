@@ -1,8 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@repo/email', () => ({
-  ResendEmail: class {},
-}))
+vi.mock('@repo/email', async importOriginal => {
+  const actual = await importOriginal<any>()
+  return {
+    ...actual,
+    ResendEmail: class {},
+  }
+})
 
 describe('email provider binding', () => {
   it('defaults to resend', async () => {
